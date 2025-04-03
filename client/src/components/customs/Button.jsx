@@ -10,7 +10,7 @@ const Button = () => {
           </div>
         </div>
 
-        <button className="relative bg-slate-900 text-white px-8 py-1 rounded-lg text-sm font-medium border border-transparent cursor-pointer hover:text-indigo-50 hover:bg-slate-800 trans active:scale-[0.98] active:bg-slate-700">
+        <button className="relative bg-slate-800 text-white px-8 py-1 rounded-lg text-sm font-medium border border-transparent cursor-pointer hover:text-indigo-50 hover:bg-indigo-800 trans active:scale-[0.98] active:bg-indigo-400">
           Get Started
         </button>
       </div>

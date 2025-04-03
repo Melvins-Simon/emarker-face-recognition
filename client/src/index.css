@@ -33,3 +33,7 @@ font-family: "Winky Sans", sans-serif;
 .trans{
     @apply transition-colors duration-300 ease-in-out
 }
+
+.textgr{
+    @apply bg-gradient-to-r from-blue-50 via-green-500 to-indigo-400 text-transparent bg-clip-text w-max
+}
