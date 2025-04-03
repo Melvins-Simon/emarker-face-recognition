@@ -47,13 +47,13 @@ This project is a full-stack web application designed to automate school attenda
 1. **Clone the repository:**
 
    ```bash
-   git clone https://github.com/Melvins-Simon/face_recognition_attendance_system_MERN.git
+   git clone https://github.com/Melvins-Simon/emarker-face-recognition.git
    ```
 
 2. **Navigate to the project directory:**
 
    ```bash
-   cd face_recognition_attendance_system_MERN
+   cd emarker-face-recognition
    ```
 
 3. **Install dependencies:**
@@ -92,7 +92,7 @@ This project is a full-stack web application designed to automate school attenda
 ## Project Structure
 
 ```
-face_recognition_attendance_system_MERN/
+emarker-face-recognition/
 ├── server/
 │   ├── controllers/
 │   ├── models/
