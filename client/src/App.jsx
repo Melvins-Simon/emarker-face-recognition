@@ -10,6 +10,7 @@ import {
   Resetpassword,
   Signin,
   Signup,
+  Ssoauth,
 } from "./components";
 const App = () => {
   return (
@@ -26,6 +27,7 @@ const App = () => {
           element={<Resetpassword />}
           path="/auth/reset-password/:resURL"
         />
+        <Route element={<Ssoauth />} path="/auth/sign-up/sso" />
       </Route>
       <Route element={<Dashlayout />}></Route>
       <Route element={<Infolayout />}></Route>

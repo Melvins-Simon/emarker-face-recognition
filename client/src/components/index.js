@@ -8,6 +8,8 @@ import Googlesignin from "./auths/Googlesignin.jsx";
 import Resetpassword from "./auths/Resetpassword.jsx";
 import Ssoauth from "./auths/Ssoauth.jsx";
 import Button from "./customs/Button.jsx";
+import Logo from "./Logo.jsx";
+import Input from "./customs/Input.jsx";
 
 export {
   Facecupture,
@@ -20,4 +22,6 @@ export {
   Signup,
   Ssoauth,
   Button,
+  Logo,
+  Input,
 };

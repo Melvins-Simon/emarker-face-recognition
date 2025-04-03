@@ -27,7 +27,7 @@ font-family: "Winky Sans", sans-serif;
 }
 
 .border-conic-gradient {
-    background: conic-gradient(#43c0fa 0deg,  #3cc0fd 90deg);
+    background: conic-gradient(#43fa52 0deg,  #3cc0fd 90deg,#3cfdd3 180deg);
 }
 
 .trans{
@@ -36,4 +36,8 @@ font-family: "Winky Sans", sans-serif;
 
 .textgr{
     @apply bg-gradient-to-r from-blue-50 via-green-500 to-indigo-400 text-transparent bg-clip-text w-max
+}
+
+.roles{
+    @apply bg-indigo-400/50 flex justify-center items-center gap-2 font-semibold ring-[.5px] py-2
 }

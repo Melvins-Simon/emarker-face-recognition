@@ -1,5 +1,5 @@
 import React from "react";
-import { Button } from "../components";
+import { Button, Logo } from "../components";
 import { Link } from "react-router-dom";
 const Home = () => {
   return (
@@ -9,13 +9,11 @@ const Home = () => {
       </div>
       <div className="w-[63%] mx-auto h-full relative ">
         <nav className="absolute pt-5 top-0 w-full flex justify-between items-center">
-          <div className="text-2xl font-extrabold font-tektur textgr animate-pulse">
-            Emarker
-          </div>
+          <Logo />
           <Button />
         </nav>
 
-        <div className="bg-gradient-to-b from-indigo-600/70 to-transparent ring-1 ring-indigo-600 hover:ring-green-600  trans h-[30%] absolute bottom-0 inset-x-0 rounded-t-2xl overflow-hidden">
+        <div className="bg-gradient-to-b from-indigo-600/70 to-transparent ring-1 ring-indigo-600 hover:ring-green-600  trans h-[30%] absolute bottom-0 inset-x-0 rounded-t-2xl overflow-hidden hover:shadow-[1px_1px_20px] transition-all shadow-green-600">
           <img
             src={`/ai2.jpeg`}
             className="object-cover w-full h-full object-center"
@@ -51,7 +49,7 @@ const Home = () => {
             </Link>
             <Link
               className="bg-indigo-600 w-[30%] text-white hover:bg-white hover:text-indigo-600  active:opacity-50 trans text-center py-2 rounded-md cursor-pointer font-semibold"
-              to={"#"}
+              to={"/auth/sign-up"}
             >
               Explore the system
             </Link>
