@@ -1,7 +1,13 @@
 import React from "react";
+import { Outlet } from "react-router-dom";
 
 const Dashlayout = () => {
-  return <div>Dashlayout</div>;
+  return (
+    <div>
+      hello
+      {<Outlet />}
+    </div>
+  );
 };
 
 export default Dashlayout;

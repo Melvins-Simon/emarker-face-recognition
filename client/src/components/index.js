@@ -11,6 +11,7 @@ import Button from "./customs/Button.jsx";
 import Logo from "./Logo.jsx";
 import Input from "./customs/Input.jsx";
 import Reset from "./auths/Reset.jsx";
+import Admindash from "./dash/Admindash.jsx";
 
 export {
   Facecupture,
@@ -26,4 +27,5 @@ export {
   Logo,
   Input,
   Reset,
+  Admindash,
 };
