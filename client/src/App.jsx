@@ -7,6 +7,7 @@ import {
   Emailsignup,
   Forgotpassword,
   Googlesignin,
+  Reset,
   Resetpassword,
   Signin,
   Signup,
@@ -23,6 +24,7 @@ const App = () => {
         <Route element={<Emailsignin />} path="/auth/sign-in/email" />
         <Route element={<Googlesignin />} path="/auth/sign-in/google/:fbURL" />
         <Route element={<Forgotpassword />} path="/auth/forgot-password" />
+        <Route element={<Reset />} path="/auth/forgot-password/reset" />
         <Route
           element={<Resetpassword />}
           path="/auth/reset-password/:resURL"

@@ -10,6 +10,7 @@ import Ssoauth from "./auths/Ssoauth.jsx";
 import Button from "./customs/Button.jsx";
 import Logo from "./Logo.jsx";
 import Input from "./customs/Input.jsx";
+import Reset from "./auths/Reset.jsx";
 
 export {
   Facecupture,
@@ -24,4 +25,5 @@ export {
   Button,
   Logo,
   Input,
+  Reset,
 };

@@ -26,7 +26,10 @@ const Input = ({ ...options }) => {
           <options.icon1 className="size-5 absolute inset-y-0 left-3 m-auto" />
         )}
         {options.icon2 && (
-          <options.icon2 className="size-5 absolute inset-y-0 right-3 m-auto" />
+          <options.icon2
+            onClick={options.ontap}
+            className="size-5 cursor-pointer absolute inset-y-0 right-3 m-auto"
+          />
         )}
       </div>
     </div>

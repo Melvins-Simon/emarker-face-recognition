@@ -39,7 +39,6 @@ const VerificationCode = ({ onVerify }) => {
   const handleSubmit = () => {
     onVerify(code.join(""));
   };
-  console.log(code);
 
   return (
     <div className="grid grid-cols-[2fr_1fr]">
@@ -64,7 +63,7 @@ const VerificationCode = ({ onVerify }) => {
         onClick={handleSubmit}
         className="ml-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 cursor-pointer"
       >
-        Verify email
+        Get code
       </button>
     </div>
   );
