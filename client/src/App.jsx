@@ -1,5 +1,5 @@
 import React from "react";
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes, useNavigate } from "react-router-dom";
 import { Home, Notfound } from "./pages";
 import { Authlayout, Dashlayout, Infolayout } from "./layouts";
 import {
@@ -14,7 +14,10 @@ import {
   Signup,
   Ssoauth,
 } from "./components";
+import { useAuthstore } from "./store/Authstore";
 const App = () => {
+  const navigate = useNavigate();
+  const { isAuthenticated } = useAuthstore();
   return (
     <Routes>
       <Route element={<Home />} path="/" exact />
@@ -29,9 +32,11 @@ const App = () => {
         <Route element={<Resetpassword />} path="/auth/reset-password/:token" />
         <Route element={<Ssoauth />} path="/auth/sign-up/sso" />
       </Route>
+
       <Route element={<Dashlayout />}>
         <Route element={<Admindash />} path="/dash/admin/:id" />
       </Route>
+
       <Route element={<Infolayout />}></Route>
       <Route element={<Notfound />} path="*" />
     </Routes>

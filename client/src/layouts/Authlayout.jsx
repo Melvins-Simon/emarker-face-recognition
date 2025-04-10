@@ -6,7 +6,7 @@ const Authlayout = () => {
     <div className="h-screen w-screen relative">
       <div className="absolute inset-40 bg-indigo-600/70 blur-[20rem]" />
       <div className="w-[60%] max-sm:w-[90%] h-full m-auto relative flex justify-center items-center">
-        <div className="absolute top-[5%] left-0">
+        <div className="absolute top-0 left-0">
           <Logo />
         </div>
         {<Outlet />}

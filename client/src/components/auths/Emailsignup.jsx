@@ -1,13 +1,16 @@
 import React, { useContext, useState } from "react";
 import Input from "../customs/Input";
-import { Link } from "react-router-dom";
-import { Eye, EyeOff, Lock, Mail, User } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
+import { Eye, EyeOff, Loader, Lock, Mail, User } from "lucide-react";
 import { Globalstate } from "../../contexts/Usecontext";
 import PasswordStrengthMeter from "../Passwordstrength";
 import VerificationCode from "../VerificationCode";
+import { useAuthstore } from "../../store/Authstore";
 
 const Emailsignup = () => {
-  const { role } = useContext(Globalstate);
+  const navigate = useNavigate();
+  const { role, cod } = useContext(Globalstate);
+  const { isLoading2, verifyEmail, error } = useAuthstore();
   const defaultData = {
     username: "",
     email: "",
@@ -22,6 +25,22 @@ const Emailsignup = () => {
   };
 
   const [showPasswd, setshowPasswd] = useState(false);
+  const Handlesubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const {
+        data: { username },
+      } = await verifyEmail(cod);
+      setuserData(defaultData);
+
+      navigate("/dash/admin/1");
+      console.log(username);
+      localStorage.setItem("user", username);
+    } catch (err) {
+      error && console.log(error);
+      console.error("err", err);
+    }
+  };
 
   return (
     <div className={`w-[410px] h-max flex flex-col gap-3 `}>
@@ -37,7 +56,7 @@ const Emailsignup = () => {
           SSO
         </Link>
       </div>
-      <form className="flex flex-col gap-2" action="">
+      <form className="flex flex-col gap-2">
         <Input
           name={"username"}
           type={`text`}
@@ -85,10 +104,17 @@ const Emailsignup = () => {
           <span>Password does not match</span>
         </div>
         <PasswordStrengthMeter password={userData.password} />
-        <VerificationCode />
+        <VerificationCode userData={userData} />
         <div className="flex justify-center items-center mt-3">
-          <button className="ml-2 px-4 py-2 w-full bg-blue-500 text-white rounded hover:bg-blue-600 cursor-pointer">
-            Create account
+          <button
+            onClick={Handlesubmit}
+            className="ml-2 px-4 py-2 w-full bg-blue-500 text-white rounded hover:bg-blue-600 cursor-pointer flex justify-center items-center"
+          >
+            {isLoading2 ? (
+              <Loader className="size-5 animate-spin" />
+            ) : (
+              "Create account"
+            )}
           </button>
         </div>
       </form>

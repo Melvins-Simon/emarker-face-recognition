@@ -1,6 +1,11 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
+import { useAuthstore } from "../store/Authstore";
+import { Loader } from "lucide-react";
+import { Globalstate } from "../contexts/Usecontext";
 
-const VerificationCode = ({ onVerify }) => {
+const VerificationCode = ({ userData }) => {
+  const { cod, setcod } = useContext(Globalstate);
+  const { signup, message, error, isLoading } = useAuthstore();
   const [code, setCode] = useState(new Array(6).fill(""));
 
   const handleChange = (value, index) => {
@@ -8,6 +13,7 @@ const VerificationCode = ({ onVerify }) => {
     const newCode = [...code];
     newCode[index] = value;
     setCode(newCode);
+    setcod(newCode.join(""));
 
     // Move to the next input if value is entered
     if (value && index < 5) {
@@ -22,6 +28,7 @@ const VerificationCode = ({ onVerify }) => {
       .split("")
       .map((char, i) => (!isNaN(char) ? char : code[i] || ""));
     setCode(newCode);
+    setcod(newCode.join(""));
 
     // Focus the last filled input
     const lastFilledIndex = Math.min(pasteData.length, 6) - 1;
@@ -36,8 +43,14 @@ const VerificationCode = ({ onVerify }) => {
     }
   };
 
-  const handleSubmit = () => {
-    onVerify(code.join(""));
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      await signup(userData);
+    } catch (err) {
+      error && console.log(error);
+      console.error("err", err);
+    }
   };
 
   return (
@@ -60,10 +73,15 @@ const VerificationCode = ({ onVerify }) => {
         ))}
       </div>
       <button
+        disabled={cod}
         onClick={handleSubmit}
-        className="ml-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 cursor-pointer"
+        className="ml-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 cursor-pointer flex justify-center items-center disabled:bg-gray-400 disabled:cursor-not-allowed"
       >
-        Get code
+        {isLoading ? (
+          <Loader className="size-5 animate-spin" />
+        ) : (
+          <b>{message ? "Resend?" : "Get code"}</b>
+        )}
       </button>
     </div>
   );
