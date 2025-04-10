@@ -14,8 +14,8 @@ import { splitName } from "../utils/returnFName.js";
 // signup
 export const signup = async (req, res, next) => {
   try {
-    const { username, email, password, confirmPassword } = req.body;
-    if (!username || !email || !password || !confirmPassword) {
+    const { username, email, password, confirmPassword, role } = req.body;
+    if (!username || !email || !password || !confirmPassword || !role) {
       return res
         .status(400)
         .json({ success: false, message: "Provide all required details." });
@@ -66,6 +66,7 @@ export const signup = async (req, res, next) => {
       password: hashedPasswd,
       verificationCode,
       verificationCodeExpTime,
+      role,
     });
     const user = await newUser.save();
     sendVerificationCode(verificationCode, email, splitName(user.username));
@@ -281,4 +282,11 @@ export const delUser = async (req, res, next) => {
       message: `Internal server error ---> ${error.message}`,
     });
   }
+};
+
+//return user
+export const getUser = async (req, res) => {
+  const userId = req.cookies;
+  try {
+  } catch (error) {}
 };

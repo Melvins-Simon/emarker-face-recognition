@@ -18,6 +18,10 @@ const userSchema = new mongoose.Schema(
       required: [true, "Provide password."],
       select: false,
     },
+    role: {
+      type: String,
+      required: [true, "Provide is null."],
+    },
     isVerified: {
       type: Boolean,
       default: false,
