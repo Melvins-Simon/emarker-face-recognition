@@ -21,7 +21,7 @@ router.post("/auth/forgot-password", forgotPasswd);
 router.post("/auth/reset-password/:id", resetPasswd);
 //Restricted routes
 router.post("/auth/signout", checkAuth, signout);
-router.post("/auth/signout", checkAuth, getUser);
+router.get("/auth/check-auth", checkAuth, getUser);
 router.delete("/auth/delete/user/:id", checkAuth, delUser);
 
 export default router;

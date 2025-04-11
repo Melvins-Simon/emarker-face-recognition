@@ -85,19 +85,19 @@ export const signup = async (req, res, next) => {
 // signin
 export const signin = async (req, res, next) => {
   try {
-    const { email, password } = req.body;
-    if (!email || !password) {
+    const { email, password, role } = req.body;
+    if (!email || !password || !role) {
       return res
         .status(400)
         .json({ success: false, message: "Provide all the required details." });
     }
 
-    const userExist = await User.findOne({ email }).select("+password");
+    const userExist = await User.findOne({ email, role }).select("+password");
 
     if (!userExist) {
       return res.status(404).json({
         success: false,
-        message: "User with the provided email not found.",
+        message: "User with the provided details not found.",
       });
     }
     const passwordMatched = await comparePasswd(password, userExist.password);
@@ -255,7 +255,7 @@ export const resetPasswd = async (req, res, next) => {
     sendResetSuccess(splitName(userExist.username), user.email);
     res
       .status(200)
-      .json({ success: false, message: "Email reset was successful." });
+      .json({ success: false, message: "Password reset was successful." });
   } catch (error) {
     res.status(500).json({
       success: false,
@@ -266,9 +266,9 @@ export const resetPasswd = async (req, res, next) => {
 
 //Delete User
 export const delUser = async (req, res, next) => {
-  const { id } = req.params;
+  const userId = req.userId;
   try {
-    const user = await User.findByIdAndDelete(id);
+    const user = await User.findByIdAndDelete(userId);
     if (!user) {
       return res.status(404).json({
         success: false,
@@ -286,7 +286,29 @@ export const delUser = async (req, res, next) => {
 
 //return user
 export const getUser = async (req, res) => {
-  const userId = req.cookies;
+  const userId = req.userId;
+
   try {
-  } catch (error) {}
+    if (!userId) {
+      return res.status(403).json({
+        success: false,
+        message: "Unauthorized, invalid or expired signature.",
+      });
+    }
+    const user = await User.findById(userId).select("-password");
+    if (!user) {
+      return res.status(403).json({
+        success: false,
+        message: "Unauthorized, invalid or expired signature.",
+      });
+    }
+    res
+      .status(200)
+      .json({ success: true, message: "Authenticated", user: user._doc });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: `Internal server error ---> ${error.message}`,
+    });
+  }
 };
