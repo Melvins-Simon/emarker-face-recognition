@@ -15,6 +15,7 @@ import {
   Ssoauth,
 } from "./components";
 import { useAuthstore } from "./store/Authstore";
+import ProtectedRoute from "./components/Routeguard";
 const App = () => {
   const navigate = useNavigate();
   const { isAuthenticated } = useAuthstore();
@@ -29,15 +30,28 @@ const App = () => {
         <Route element={<Googlesignin />} path="/auth/sign-in/google/:fbURL" />
         <Route element={<Forgotpassword />} path="/auth/forgot-password" />
         <Route element={<Reset />} path="/auth/forgot-password/reset" />
-        <Route element={<Resetpassword />} path="/auth/reset-password/:token" />
+        <Route element={<Resetpassword />} path="/auth/reset-password/:id" />
         <Route element={<Ssoauth />} path="/auth/sign-up/sso" />
       </Route>
 
-      <Route element={<Dashlayout />}>
+      {/* protected routes */}
+      <Route
+        element={
+          <ProtectedRoute>
+            <Dashlayout />
+          </ProtectedRoute>
+        }
+      >
         <Route element={<Admindash />} path="/dash/admin/:id" />
       </Route>
 
-      <Route element={<Infolayout />}></Route>
+      <Route
+        element={
+          <ProtectedRoute>
+            <Infolayout />
+          </ProtectedRoute>
+        }
+      ></Route>
       <Route element={<Notfound />} path="*" />
     </Routes>
   );

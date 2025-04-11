@@ -2,18 +2,25 @@ import React, { useState } from "react";
 import Input from "../customs/Input";
 import { Link, useNavigate } from "react-router-dom";
 import { Mail } from "lucide-react";
+import { useAuthstore } from "../../store/Authstore";
 
 const Forgotpassword = () => {
+  const { forgot_password, error } = useAuthstore();
   const navigate = useNavigate();
   const [userData, setuserData] = useState("");
-  const [error, seterror] = useState(false);
   const Handleonchange = (e) => {
     const { value } = e.target;
     setuserData(value);
   };
-  const Handlesubmit = (e) => {
+  const Handlesubmit = async (e) => {
     e.preventDefault();
-    navigate("/auth/forgot-password/reset");
+    try {
+      await forgot_password(userData);
+      localStorage.setItem("em", userData);
+      navigate("/auth/forgot-password/reset");
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
@@ -40,9 +47,6 @@ const Forgotpassword = () => {
           icon1={Mail}
           onchange={Handleonchange}
         />
-        <div className="text-center text-red-500 -my-2">
-          <span>{error && "Error sending password reset link."}</span>
-        </div>
 
         <div className="flex justify-center items-center mt-3">
           <button

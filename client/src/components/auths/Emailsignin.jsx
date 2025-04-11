@@ -1,11 +1,15 @@
 import React, { useContext, useState } from "react";
 import Input from "../customs/Input";
-import { Link } from "react-router-dom";
-import { Eye, EyeOff, Lock, Mail } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
+import { Eye, EyeOff, Loader, Lock, Mail } from "lucide-react";
 import { Globalstate } from "../../contexts/Usecontext";
+import { useAuthstore } from "../../store/Authstore";
+import toTitleCase from "../../hooks/to_title";
 
 const Emailsignin = () => {
   const { role } = useContext(Globalstate);
+  const { signin, isLoading } = useAuthstore();
+  const navigate = useNavigate();
   const defaultData = {
     email: "",
     password: "",
@@ -18,6 +22,18 @@ const Emailsignin = () => {
   };
 
   const [showPasswd, setshowPasswd] = useState(false);
+
+  const Handlesubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const res = await signin(userData);
+      localStorage.setItem("user", toTitleCase(res.username));
+      navigate("/dash/admin/1");
+      console.log(res);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <div className={`w-[410px] h-max flex flex-col gap-5 -mt-[10%]`}>
@@ -34,7 +50,7 @@ const Emailsignin = () => {
           Google
         </Link>
       </div>
-      <form className="flex flex-col gap-4" action="">
+      <form onSubmit={Handlesubmit} className="flex flex-col gap-4" action="">
         <Input
           name={"email"}
           type={`email`}
@@ -59,8 +75,15 @@ const Emailsignin = () => {
           <Link to={`/auth/forgot-password`}>Forgot password?</Link>
         </div>
         <div className="flex justify-center items-center mt-3">
-          <button className="ml-2 px-4 py-2 w-full bg-blue-500 text-white rounded hover:bg-blue-600 cursor-pointer">
-            Log in
+          <button
+            type="submit"
+            className="ml-2 px-4 py-2 w-full bg-blue-500 text-white rounded hover:bg-blue-600 cursor-pointer flex justify-center items-center"
+          >
+            {isLoading ? (
+              <Loader className="size-5 animate-spin" />
+            ) : (
+              <span>Log in</span>
+            )}
           </button>
         </div>
       </form>
