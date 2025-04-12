@@ -8,7 +8,8 @@ import toTitleCase from "../../hooks/to_title";
 
 const Emailsignin = () => {
   const { role } = useContext(Globalstate);
-  const { signin, isLoading } = useAuthstore();
+  const { signin, isLoading, userID } = useAuthstore();
+
   const navigate = useNavigate();
   const defaultData = {
     email: "",
@@ -28,8 +29,7 @@ const Emailsignin = () => {
     try {
       const res = await signin(userData);
       localStorage.setItem("user", toTitleCase(res.username));
-      navigate("/dash/admin/1");
-      console.log(res);
+      navigate(`/dash/${res.role}/${res._id}`);
     } catch (error) {
       console.log(error);
     }

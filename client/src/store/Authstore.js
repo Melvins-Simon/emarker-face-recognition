@@ -14,6 +14,7 @@ export const useAuthstore = create(
     isLoading2: false,
     isAuthenticated: false,
     isCheckingAuth: false,
+    userID: null,
     signup: async ({ username, email, password, confirmPassword, role }) => {
       set({ isLoading: true, error: null });
       try {
@@ -51,6 +52,7 @@ export const useAuthstore = create(
           isLoading2: false,
           message: response.data.message,
           isAuthenticated: true,
+          userID: response.data.data._id,
         });
         toast.success(response.data.message);
         return response.data;
@@ -71,10 +73,14 @@ export const useAuthstore = create(
           isAuthenticated: false,
           user: null,
           message: null,
+          userID: null,
         });
+
         toast.success(response.data.message);
         localStorage.removeItem("em");
         localStorage.removeItem("user");
+        localStorage.removeItem("role");
+        localStorage.removeItem("undefined");
       } catch (error) {
         set({ error: error.response.data.message, isLoading: false });
         toast.error(error.response.data.message);
@@ -94,6 +100,7 @@ export const useAuthstore = create(
           isLoading: false,
           isAuthenticated: true,
           message: response.data.message,
+          userID: response.data.data._id,
         });
         toast.success(response.data.message);
         return response.data.data;
@@ -112,6 +119,7 @@ export const useAuthstore = create(
           isCheckingAuth: false,
           isAuthenticated: true,
           message: response.data.message,
+          userID: response.data.data._id,
         });
         toast.success(response.data.message);
         return response.data.user;
@@ -157,6 +165,32 @@ export const useAuthstore = create(
         set({
           message: response.data.message,
           isLoading: false,
+        });
+        toast.success(response.data.message);
+        return response.data.user;
+      } catch (error) {
+        set({
+          error: error.response.data.message,
+          isCheckingAuth: false,
+          isLoading: false,
+        });
+        toast.error(error.response.data.message);
+        throw error;
+      }
+    },
+    upload_dataset: async (images) => {
+      set({ isLoading: true, error: null });
+      try {
+        const response = await axios.post(
+          `${API_URL}/student/upload-face-dataset`,
+          {
+            images,
+          }
+        );
+        set({
+          message: response.data.message,
+          isLoading: false,
+          urls: response.data.urls,
         });
         toast.success(response.data.message);
         return response.data.user;

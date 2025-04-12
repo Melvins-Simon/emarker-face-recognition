@@ -29,11 +29,11 @@ const Emailsignup = () => {
     e.preventDefault();
     try {
       const {
-        data: { username },
+        data: { username, role, _id },
       } = await verifyEmail(cod);
       setuserData(defaultData);
 
-      navigate("/dash/admin/1");
+      navigate(`/${role}/info/${_id}`);
       console.log(username);
       localStorage.setItem("user", username);
     } catch (err) {
