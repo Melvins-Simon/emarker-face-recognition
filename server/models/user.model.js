@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { type } from "os";
 
 const userSchema = new mongoose.Schema(
   {
@@ -21,6 +22,9 @@ const userSchema = new mongoose.Schema(
     role: {
       type: String,
       required: [true, "Provide is null."],
+    },
+    images: {
+      type: [String],
     },
     isVerified: {
       type: Boolean,

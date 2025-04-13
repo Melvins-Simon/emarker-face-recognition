@@ -13,14 +13,16 @@ app.use((error, req, res, next) => {
   const message = error.message || `Something went wrong.`;
   return res.status(status).json({ success: false, message: message });
 });
-app.use(express.json({ limit: "10mb" }));
-app.use(express.urlencoded({ extended: true, limit: "10mb" }));
+app.use(express.json({ limit: "50mb" }));
+app.use(express.urlencoded({ extended: true, limit: "50mb" }));
 app.use(cookieParser());
 app.use(cors({ origin: process.env.CLIENT_URL, credentials: true }));
+
+// Routes
+app.use("/api", authRouter);
+app.use("/api", imgRouter);
+// Server
 app.listen(process.env.PORT || 3000, (next) => {
   conDb(next);
   console.log(`Server running on port ---> ${process.env.PORT || 3000}`);
 });
-
-app.use("/api", authRouter);
-app.use("/api", imgRouter);
