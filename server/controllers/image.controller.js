@@ -1,33 +1,6 @@
 import { User } from "../models/user.model.js";
 import cloudinary from "../utils/clodinary.js";
 
-// export const upload_image = async (req, res) => {
-//   try {
-//     const { images } = req.body;
-//     console.log(images);
-
-//     if (!images || !Array.isArray(images)) {
-//       return res.status(400).json({ error: "Images are required" });
-//     }
-
-//     const uploadPromises = images.map((img) =>
-//       cloudinary.uploader.upload(`data:image/jpeg;base64,${img}`, {
-//         folder: "face-dataset",
-//       })
-//     );
-
-//     const results = await Promise.all(uploadPromises);
-//     const urls = results.map((r) => r.secure_url);
-
-//     res
-//       .status(200)
-//       .json({ success: true, message: "Dataset upload success.", urls });
-//   } catch (error) {
-//     console.error("Cloudinary upload error:", error);
-//     res.status(500).json({ error: "Failed to upload images" });
-//   }
-// };
-
 export const upload_image = async (req, res) => {
   try {
     const { images, name, email } = req.body;
@@ -98,5 +71,19 @@ export const upload_image = async (req, res) => {
     res.status(500).json({
       error: error.message || "Image processing failed",
     });
+  }
+};
+
+export const get_images = async (req, res) => {
+  try {
+    const result = await cloudinary.api.resources({
+      type: "upload",
+      prefix: "face-dataset/",
+      max_results: 100,
+    });
+    res.json(result.resources);
+  } catch (error) {
+    console.error("Error fetching faces:", error);
+    res.status(500).json({ error: "Failed to fetch face images" });
   }
 };

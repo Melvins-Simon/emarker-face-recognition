@@ -67,11 +67,11 @@ const Studentinfo = () => {
     setCapturing(true);
     const tempFrames = [];
 
-    for (let i = 0; i < 20; i++) {
+    for (let i = 0; i < 10; i++) {
       context.drawImage(video, 0, 0, width, height);
       const dataUrl = canvasRef.current.toDataURL("image/jpeg", 1);
       tempFrames.push(dataUrl);
-      setCapturedFrames((prev) => [...prev.slice(-19), dataUrl]);
+      setCapturedFrames((prev) => [...prev.slice(-9), dataUrl]);
       await new Promise((resolve) => setTimeout(resolve, 500));
     }
 
@@ -135,7 +135,7 @@ const Studentinfo = () => {
               }`}
             >
               {capturing
-                ? `Capturing... ${capturedFrames.length}/20`
+                ? `Capturing... ${capturedFrames.length}/10`
                 : "Start Capture"}
             </button>
           )}

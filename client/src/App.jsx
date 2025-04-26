@@ -22,6 +22,7 @@ import {
 
 import ProtectedRoute from "./components/Routeguard";
 import { useAuthstore } from "./store/Authstore";
+import FaceRecognition from "./components/Session";
 const App = () => {
   const { isAuthenticated, user } = useAuthstore();
   return (
@@ -108,6 +109,14 @@ const App = () => {
         <Route element={<Lecturerinfo />} path="/lecturer/info/:id" />
         <Route element={<Admininfo />} path="/admin/info/:id" />
       </Route>
+      <Route
+        element={
+          <ProtectedRoute>
+            <FaceRecognition />
+          </ProtectedRoute>
+        }
+        path={`/face-recognition/session/${user?.id}`}
+      />
       <Route element={<Notfound />} path="*" />
       <Route element={<Notauthorized />} path="/not-authorized" />
     </Routes>
