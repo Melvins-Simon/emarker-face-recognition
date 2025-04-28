@@ -4,13 +4,11 @@ import { Home, Notauthorized, Notfound } from "./pages";
 import { Authlayout, Dashlayout, Infolayout } from "./layouts";
 import {
   Admindash,
-  Admininfo,
   Emailsignin,
   Emailsignup,
   Forgotpassword,
   Googlesignin,
   Lecturerdash,
-  Lecturerinfo,
   Reset,
   Resetpassword,
   Signin,
@@ -106,8 +104,6 @@ const App = () => {
         }
       >
         <Route element={<Studentinfo />} path="/student/info/:id" />
-        <Route element={<Lecturerinfo />} path="/lecturer/info/:id" />
-        <Route element={<Admininfo />} path="/admin/info/:id" />
       </Route>
       <Route
         element={

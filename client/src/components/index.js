@@ -13,8 +13,6 @@ import Input from "./customs/Input.jsx";
 import Reset from "./auths/Reset.jsx";
 import Admindash from "./dash/Admindash.jsx";
 import Studentinfo from "./info/Studentinfo.jsx";
-import Lecturerinfo from "./info/Lecturerinfo.jsx";
-import Admininfo from "./info/Admininfo.jsx";
 import Lecturerdash from "./dash/Lecturerdash.jsx";
 import Studentdash from "./dash/Studentdash.jsx";
 
@@ -34,8 +32,6 @@ export {
   Reset,
   Admindash,
   Studentinfo,
-  Admininfo,
-  Lecturerinfo,
   Lecturerdash,
   Studentdash,
 };

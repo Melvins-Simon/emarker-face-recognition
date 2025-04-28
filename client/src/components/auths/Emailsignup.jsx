@@ -33,7 +33,10 @@ const Emailsignup = () => {
       } = await verifyEmail(cod);
       setuserData(defaultData);
 
-      navigate(`/${role}/info/${_id}`);
+      role === "student"
+        ? navigate(`/${role}/info/${_id}`)
+        : navigate(`/dash/${role}/${_id}`);
+
       console.log(username);
       localStorage.setItem("user", username);
     } catch (err) {

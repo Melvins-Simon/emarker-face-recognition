@@ -81,6 +81,7 @@ export const useAuthstore = create(
         localStorage.removeItem("user");
         localStorage.removeItem("role");
         localStorage.removeItem("undefined");
+        return response.data.message;
       } catch (error) {
         set({ error: error.response.data.message, isLoading: false });
         toast.error(error.response.data.message);

@@ -7,7 +7,7 @@ const Dashlayout = () => {
   console.log(userID);
 
   return (
-    <div className="h-screen w-screen p-2 bg-black">
+    <div className="h-screen w-screen p-2 bg-black overflow-hidden">
       <Outlet />
     </div>
   );
