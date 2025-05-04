@@ -8,6 +8,7 @@ import { Link } from "react-router-dom";
 import formattedDate from "../utils/date.js";
 
 const FaceRecognition = () => {
+  const requestCooldown = useRef(new Map());
   const { user, mark_attendance } = useGlobalstore();
 
   // Refs
@@ -40,10 +41,16 @@ const FaceRecognition = () => {
           faceapi.nets.faceLandmark68Net.loadFromUri("/models"),
           faceapi.nets.faceRecognitionNet.loadFromUri("/models"),
         ]);
+
+        // Verify models are actually loaded
+        if (!faceapi.nets.tinyFaceDetector.params) {
+          throw new Error("TinyFaceDetector failed to load");
+        }
+
         setModelsLoaded(true);
       } catch (err) {
-        console.error("Error loading models:", err);
-        setError("Failed to load face detection models.");
+        console.error("Model loading error:", err);
+        setError(`Model loading failed: ${err.message}`);
         setIsLoading(false);
       }
     };
@@ -115,19 +122,32 @@ const FaceRecognition = () => {
       }
 
       try {
-        const response = await mark_attendance(courseID, studentId);
-        if (response?.success) {
+        console.log(
+          "Marking attendance for:",
+          studentId,
+          "in course:",
+          courseID
+        );
+        const response = await axios.post(
+          "http://localhost:5000/api/mark-attendance",
+          {
+            courseId: courseID,
+            studentId,
+          }
+        );
+
+        if (response.data.success) {
           setMarkedStudents((prev) => new Set(prev).add(studentId));
           return true;
         }
         return false;
       } catch (err) {
+        console.error("Attendance error:", err.response?.data || err.message);
         return false;
       }
     },
-    [courseID, mark_attendance]
+    [courseID]
   );
-
   // Draw face boxes on canvas
   const drawFaceBoxes = useCallback(
     (detections, matches) => {
@@ -184,28 +204,30 @@ const FaceRecognition = () => {
 
   // Main face detection function
   const detectFaces = useCallback(async () => {
+    // Early returns for missing dependencies
     if (
-      !webcamRef.current ||
+      !webcamRef.current?.video ||
       !modelsLoaded ||
       labeledDescriptors.length === 0
-    ) {
+    )
       return;
-    }
 
-    const video = webcamRef.current.video;
-    if (!video || video.readyState !== 4) return;
+    const { video } = webcamRef.current;
+    if (video.readyState !== 4) return;
 
-    // Set canvas dimensions to match video
+    // Canvas setup
+    const canvas = canvasRef.current;
+    const ctx = canvas.getContext("2d");
     if (
-      canvasRef.current.width !== video.videoWidth ||
-      canvasRef.current.height !== video.videoHeight
+      canvas.width !== video.videoWidth ||
+      canvas.height !== video.videoHeight
     ) {
-      canvasRef.current.width = video.videoWidth;
-      canvasRef.current.height = video.videoHeight;
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
     }
 
     try {
-      // Detect faces
+      // Face detection with optimized options
       const detections = await faceapi
         .detectAllFaces(
           video,
@@ -217,61 +239,69 @@ const FaceRecognition = () => {
         .withFaceLandmarks()
         .withFaceDescriptors();
 
-      // Filter valid detections
+      // Validate and filter detections
       const validDetections = detections.filter((det) => {
-        const box = det.detection.box;
-        return box.width > MIN_FACE_SIZE && box.height > MIN_FACE_SIZE;
+        const box = det.detection?.box;
+        return (
+          box?.width > MIN_FACE_SIZE &&
+          box?.height > MIN_FACE_SIZE &&
+          !isNaN(box.x) &&
+          !isNaN(box.y)
+        );
       });
 
-      if (validDetections.length > 0) {
-        const faceMatcher = new faceapi.FaceMatcher(labeledDescriptors);
-        const newDetectedStudents = new Map(detectedStudents);
-        const matches = validDetections.map((det) =>
-          faceMatcher.findBestMatch(det.descriptor)
-        );
-        const now = Date.now();
-        let needsUpdate = false;
+      // Clear canvas if no valid faces
+      if (validDetections.length === 0) {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        if (detectedStudents.size > 0) setDetectedStudents(new Map());
+        return;
+      }
 
-        // Draw detections immediately
-        drawFaceBoxes(validDetections, matches);
+      // Face matching
+      const faceMatcher = new faceapi.FaceMatcher(labeledDescriptors);
+      const matches = validDetections.map((det) =>
+        faceMatcher.findBestMatch(det.descriptor)
+      );
 
-        for (let i = 0; i < matches.length; i++) {
-          const match = matches[i];
-          const accuracy = (1 - match.distance) * 100;
+      // Draw face boxes
+      drawFaceBoxes(validDetections, matches);
 
-          if (accuracy > MIN_ACCURACY && match.label !== "Unknown") {
-            const studentId = match.label.split("/")[1].split("-")[1];
-            const existing = detectedStudents.get(studentId);
+      // Attendance marking logic
+      const now = Date.now();
+      const newDetectedStudents = new Map(detectedStudents);
+      let needsUpdate = false;
 
-            if (!existing || now - existing.timestamp > DETECTION_COOLDOWN) {
-              newDetectedStudents.set(studentId, {
-                label: match.label,
-                accuracy,
-                timestamp: now,
-                detectionBox: validDetections[i].detection.box,
-              });
-              needsUpdate = true;
+      for (let i = 0; i < matches.length; i++) {
+        const match = matches[i];
+        const accuracy = (1 - match.distance) * 100;
 
-              if (!markedStudents.has(studentId)) {
-                await markAttendance(studentId);
-              }
+        if (accuracy > MIN_ACCURACY && match?.label?.includes("/")) {
+          const studentId = match.label.split("/")[1].split("-")[1];
+          const lastDetection = detectedStudents.get(studentId);
+
+          if (
+            !lastDetection ||
+            now - lastDetection.timestamp > DETECTION_COOLDOWN
+          ) {
+            newDetectedStudents.set(studentId, {
+              label: match.label,
+              accuracy,
+              timestamp: now,
+              detectionBox: validDetections[i].detection.box,
+            });
+            needsUpdate = true;
+
+            if (!markedStudents.has(studentId)) {
+              await markAttendance(studentId);
             }
           }
         }
-
-        if (needsUpdate) {
-          setDetectedStudents(newDetectedStudents);
-        }
-      } else {
-        // Clear canvas if no faces detected
-        const ctx = canvasRef.current.getContext("2d");
-        ctx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
-        if (detectedStudents.size > 0) {
-          setDetectedStudents(new Map());
-        }
       }
+
+      if (needsUpdate) setDetectedStudents(newDetectedStudents);
     } catch (err) {
       console.error("Detection error:", err);
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
     }
   }, [
     modelsLoaded,

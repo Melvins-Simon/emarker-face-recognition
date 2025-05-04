@@ -83,7 +83,7 @@ export const SEND_VERIFICATION_CODE = `
             <tbody>
               <tr>
                 <td style="padding:48px 0 30px 0; text-align: center; font-size: 14px; color: #ffffff; background:#000000; font-weight:800;">
-                  XenieCOM Technologies
+                  Emarker System
                 </td>
               </tr>
               <tr>
@@ -114,7 +114,7 @@ export const SEND_VERIFICATION_CODE = `
                       </tr>
                       <tr>
                         <td style="padding: 0 0 60px 0; font-size: 14px; line-height: 150%; font-weight: 400; color: #000000; letter-spacing: 0.01em; text-decoration:none;">
-                          If you didn’t request the password reset, please ignore this message or contact our support at <a href="mailto:1xeniex.augustsson@gmail.com">support_email</a>.
+                          If you didn’t request the password reset, please ignore this message or contact our support at <a href="mailto:n.e.l.v.i.n.s.o.s.i.m.o.n@gmail.com">support_email</a>.
                         </td>
                       </tr>
                       <tr>
@@ -124,7 +124,7 @@ export const SEND_VERIFICATION_CODE = `
                       </tr>
                       <tr>
                         <td style="font-size: 14px; line-height: 170%; font-weight: 400; color: #000000; letter-spacing: 0.01em;">
-                          Best regards, <br><strong>XenieCOM Team</strong>
+                          Best regards, <br><strong>Emarker Team</strong>
                         </td>
                       </tr>
                     </tbody>
@@ -135,7 +135,7 @@ export const SEND_VERIFICATION_CODE = `
                 <td style="padding: 24px 0 48px; font-size: 0px;">
                   <!--[if mso | IE]>      <table role="presentation" border="0" cellpadding="0" cellspacing="0">        <tr>          <td style="vertical-align:top;width:300px;">      <![endif]-->
                   <div class="outlook-group-fix" style="padding: 0 0 20px 0; vertical-align: top; display: inline-block; text-align: center; width:100%;">
-                    <span style="padding: 0; font-size: 11px; line-height: 15px; font-weight: normal; color: #8B949F;">XenieCOM Technologies<br/>Langata Nairobi,Kenya</span>
+                    <span style="padding: 0; font-size: 11px; line-height: 15px; font-weight: normal; color: #8B949F;">Emarker Systems<br/>Langata Nairobi,Kenya</span>
                   </div>
           
                 </td>
@@ -232,7 +232,7 @@ export const SEND_WELCOME_MAIL = `
             <tbody>
               <tr style="background-color:#000;">
                 <td style="padding:48px 0 30px 0; text-align: center; font-size: 20px; color: #fff; font-weight:600;">
-                  XenieCom Technologies
+                  Emarker Systems
                 </td>
               </tr>
               <tr>
@@ -255,21 +255,21 @@ export const SEND_WELCOME_MAIL = `
                           <td style="font-size: 14px; line-height: 170%; font-weight: 400; color: #000000; letter-spacing: 0.01em;">
 
           
-            Welcome to XenieCom Technologies! We’re thrilled to have you on board. 🚀
+            Welcome to Emarker Systems! We’re thrilled to have you on board. 🚀
 
             You’re now part of a community that values innovation and excellence. Get ready to explore cutting-edge solutions and seamless experiences with us.
 
-            If you have any questions or need assistance, feel free to reach out. We’re here to help!
-
-            Stay tuned for updates and exciting opportunities ahead.
-
-            Best regards,
-            The XenieCom Technologies Team
+            
                           </td>
+                          <tr>
+                          <td>If you have any questions or need assistance, feel free to reach out. We’re here to help!
+
+            Stay tuned for updates and exciting opportunities ahead.</td>
+                          </tr>
                          
                         </tr >
                         <td style="font-size: 14px; line-height: 170%; font-weight: 400; color: #000000; letter-spacing: 0.01em; padding:10px 0 0 0;">
-                          Best regards, <br><strong>XenieCom Team.</strong>
+                          Best regards, <br><strong>Emarker Team.</strong>
                         </td>
                       </tr>
                     </tbody>
@@ -279,7 +279,7 @@ export const SEND_WELCOME_MAIL = `
               <tr>
                 <td style="padding: 24px 0 48px; font-size: 0px;">                 
                   <div class="outlook-group-fix" style="padding: 0 0 20px 0; vertical-align: top; display: inline-block; text-align: center; width:100%;">
-                    <span style="padding: 0; font-size: 11px; line-height: 15px; font-weight: normal; color: #8B949F;">XenieCom Technologies<br/>Langata Nairobi,Kenya</span>
+                    <span style="padding: 0; font-size: 11px; line-height: 15px; font-weight: normal; color: #8B949F;">Emarker Systems<br/>Langata Nairobi,Kenya</span>
                   </div>
                 </td>
               </tr>
@@ -371,7 +371,7 @@ export const SEND_PASSWD_RESETLINK = `
             <tbody>
               <tr style="background-color:#000;">
                 <td style="padding:48px 0 30px 0; text-align: center; font-size: 20px; color: #fff; font-weight:600;">
-                  XenieCOM Technologies
+                  Emarker Systems
                 </td>
               </tr>
               <tr>
@@ -415,7 +415,7 @@ export const SEND_PASSWD_RESETLINK = `
                       </tr>
                       <tr>
                         <td style="font-size: 14px; line-height: 170%; font-weight: 400; color: #000000; letter-spacing: 0.01em;">
-                          Best regards, <br><strong>XenieCOM Team</strong>
+                          Best regards, <br><strong>Emarker Team</strong>
                         </td>
                       </tr>
                     </tbody>
@@ -426,7 +426,7 @@ export const SEND_PASSWD_RESETLINK = `
                 <td style="padding: 24px 0 48px; font-size: 0px;">
  
                   <div class="outlook-group-fix" style="padding: 0 0 20px 0; vertical-align: top; display: inline-block; text-align: center; width:100%;">
-                    <span style="padding: 0; font-size: 11px; line-height: 15px; font-weight: normal; color: #8B949F;">XenieCOM Technologies<br/>Langata Nairobi,Kenya</span>
+                    <span style="padding: 0; font-size: 11px; line-height: 15px; font-weight: normal; color: #8B949F;">Emarker Systems<br/>Langata Nairobi,Kenya</span>
                   </div>
            
                 </td>
@@ -520,7 +520,7 @@ export const SEND_RESET_PASSWORDSUCCESS = `
             <tbody>
               <tr style="background-color:#000;">
                 <td style="padding:48px 0 30px 0; text-align: center; font-size: 20px; font-weight:600; color: #fff;">
-                  XenieCOM Technologies
+                  Emarker Systems
                 </td>
               </tr>
               <tr>
@@ -545,7 +545,7 @@ Great news! Your password has been successfully reset. While you’re here, let�
 
 We appreciate having you with us and are committed to providing you with a secure and seamless experience. If you ever need assistance, we’re just a message away!
 
-Thanks for being part of XenieCOM we’re lucky to have you!
+Thanks for being part of Emarker we’re lucky to have you!
                 </td>
 
               </tr>
@@ -557,7 +557,7 @@ Thanks for being part of XenieCOM we’re lucky to have you!
                       </tr>
                       <tr>
                         <td style="font-size: 14px; line-height: 170%; font-weight: 400; color: #000000; letter-spacing: 0.01em;">
-                          Best regards, <br><strong>XenieCOM Team</strong>
+                          Best regards, <br><strong>Emarker Team</strong>
                         </td>
                       </tr>
                     </tbody>
@@ -567,7 +567,7 @@ Thanks for being part of XenieCOM we’re lucky to have you!
               <tr>
                 <td style="padding: 24px 0 48px; font-size: 0px;">  
                   <div class="outlook-group-fix" style="padding: 0 0 20px 0; vertical-align: top; display: inline-block; text-align: center; width:100%;">
-                    <span style="padding: 0; font-size: 11px; line-height: 15px; font-weight: normal; color: #8B949F;">XenieCOM Technologies<br/>Langata Nairobi,Kenya</span>
+                    <span style="padding: 0; font-size: 11px; line-height: 15px; font-weight: normal; color: #8B949F;">Emarker Systems<br/>Langata Nairobi,Kenya</span>
                   </div>
                             </td>
               </tr>

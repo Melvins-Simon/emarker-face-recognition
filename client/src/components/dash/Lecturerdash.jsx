@@ -29,10 +29,21 @@ const Lecturerdash = () => {
     [searchTerm, units]
   );
 
-  // Initialize selected unit
+  useEffect(() => {
+    if (selectedUnit) {
+      const foundCourse = lecs.find((course) => course.name === selectedUnit);
+
+      if (foundCourse) {
+        localStorage.setItem("courseuid", foundCourse._id);
+      } else {
+      }
+    } else {
+    }
+  }, [selectedUnit]);
   useEffect(() => {
     if (units.length > 0 && !selectedUnit) {
       setSelectedUnit(units[0]);
+      localStorage.setItem("courseuidc", units[0]);
     }
   }, [units]);
 
@@ -246,6 +257,7 @@ const Lecturerdash = () => {
                     }`}
                     onClick={() => {
                       setSelectedUnit(unit);
+                      localStorage.setItem("courseuidc", unit);
                       setIsDropdownOpen(false);
                     }}
                   >

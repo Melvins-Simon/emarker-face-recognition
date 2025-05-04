@@ -30,7 +30,7 @@ export const useAuthstore = create(
           message: response.data.message,
           isAuthenticated: false,
         });
-        toast.success(response.data.message);
+        toast.success(`${response.data.message}-Check Spam!`);
       } catch (error) {
         set({
           error:

@@ -19,7 +19,7 @@ const StudentDash = () => {
     })();
   }, []);
   // Memoize courses to prevent recreation on every render
-  const courses = useMemo(() => lecs.map((unit) => unit.name), [lecs]); // Only recreate if user.courses changes
+  const courses = lecs && useMemo(() => lecs?.map((unit) => unit.name), [lecs]); // Only recreate if user.courses changes
 
   const [selectedCourse, setSelectedCourse] = useState(courses[0] || "");
   const [searchTerm, setSearchTerm] = useState("");
