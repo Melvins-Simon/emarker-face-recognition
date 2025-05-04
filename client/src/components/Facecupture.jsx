@@ -1,7 +1,7 @@
 import React from "react";
 
 const Facecupture = () => {
-  return <div>Facecupturing</div>;
+  return <div>Facecupture</div>;
 };
 
 export default Facecupture;
