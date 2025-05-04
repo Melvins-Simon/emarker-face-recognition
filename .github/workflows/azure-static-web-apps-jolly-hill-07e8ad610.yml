@@ -15,31 +15,36 @@ jobs:
     runs-on: ubuntu-latest
     name: Build and Deploy Job
     permissions:
-       id-token: write
-       contents: read
+      id-token: write
+      contents: read
     steps:
       - uses: actions/checkout@v3
         with:
           submodules: true
-          lfs: false
+          fetch-depth: 0
+          
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16.x
+          
       - name: Install Dependencies
-        run: |
-          cd client # Navigate to the client directory
-          npm install
+        working-directory: client
+        run: npm install
+          
       - name: Build The Client
-        run: |
-          cd client # Navigate to the client directory
-          npm run build
+        working-directory: client
+        run: npm run build
+          
       - name: Deploy to Azure Static Web Apps
-        id: builddeploy
         uses: Azure/static-web-apps-deploy@v1
         with:
           azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_JOLLY_HILL_07E8AD610 }}
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
           action: "upload"
-          app_location: "./client" # App source code path
-          api_location: "" # API source code path - Optional if no API
-          output_location: "build" # Directory of built app (default for CRA)
-          github_id_token: ${{ steps.idtoken.outputs.result }}
+          app_location: "client"
+          output_location: "build"
+          skip_app_build: true  # Since we're building manually above
 
   close_pull_request_job:
     if: github.event_name == 'pull_request' && github.event.action == 'closed'
@@ -47,7 +52,7 @@ jobs:
     name: Close Pull Request Job
     steps:
       - name: Close Pull Request
-        id: closepullrequest
         uses: Azure/static-web-apps-deploy@v1
         with:
+          azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_JOLLY_HILL_07E8AD610 }}
           action: "close"
