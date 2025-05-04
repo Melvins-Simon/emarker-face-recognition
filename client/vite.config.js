@@ -9,6 +9,17 @@ export default defineConfig({
     "process.env": {},
     "window.global": "window",
   },
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: (id) => {
+          if (id.includes("node_modules")) {
+            return "vendor";
+          }
+        },
+      },
+    },
+  },
   optimizeDeps: {
     esbuildOptions: {
       define: {
