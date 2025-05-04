@@ -4,7 +4,10 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
 axios.defaults.withCredentials = true;
-const API_URL = "http://localhost:5000/api/";
+const API_URL =
+  import.meta.env.MODE === "development"
+    ? "http://localhost:5000/api/"
+    : "https://ms-emarker-euhcbzb9gbf7ejgs.centralus-01.azurewebsites.net/api/";
 export const useGlobalstore = create(
   persist((set) => ({
     isLoading: false,
