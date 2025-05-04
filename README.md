@@ -1,144 +1,205 @@
-# Face Recognition Attendance System
+# Face Recognition Attendance System (EMARKER)
 
-This project is a full-stack web application designed to automate school attendance using facial recognition technology. It leverages the MERN stack—**MongoDB**, **Express.js**, **React.js**, and **Node.js**—alongside [face-api.js](https://justadudewhohacks.github.io/face-api.js/docs/index.html) for real-time face detection and recognition.
+![Face Enrollment](/client/public/session.png)
+_Real-time face detection and attendance marking in action_
 
-## Table of Contents
+## 🌟 Introduction
 
-- [Features](#features)
-- [Technologies Used](#technologies-used)
-- [Getting Started](#getting-started)
-  - [Prerequisites](#prerequisites)
-  - [Installation](#installation)
-  - [Running the Application](#running-the-application)
-- [Project Structure](#project-structure)
-- [API Endpoints](#api-endpoints)
-- [Contributing](#contributing)
-- [License](#license)
-- [Acknowledgements](#acknowledgements)
+EMARKER is a **full-stack facial recognition attendance system** built on the MERN stack (Node.js, Express, React, MongoDB). It automates classroom attendance by identifying students through webcam face detection, eliminating manual roll calls.
 
-## Features
+## ✨ Key Features
 
-- **User Authentication:** Secure login for administrators and students.
-- **Face Enrollment:** Register student faces for recognition.
-- **Automated Attendance:** Detect and recognize faces to mark attendance.
-- **Attendance Reports:** Generate and view attendance records.
+| Feature                    | Description                                  |
+| -------------------------- | -------------------------------------------- |
+| 👨🏫 **Role-Based Access** | Admin, Lecturers, and Student dashboards     |
+| 📸 **Face Enrollment**     | Register student faces with webcam captures  |
+| 🎥 **Real-Time Detection** | Live classroom attendance marking via webcam |
+| 📊 **Automated Reports**   | Generate PDF attendance reports by course    |
+| ☁ **Cloud Storage**        | Student faces stored securely in Cloudinary  |
 
-## Technologies Used
+![Admin Dashboard](/client/public/dash.png)  
+_Admin portal for managing courses and users_
 
-- **Frontend:**
-  - React.js
-  - Vite (for build tooling)
-  - face-api.js
-- **Backend:**
-  - Node.js
-  - Express.js
-  - MongoDB
+## 🛠 Tech Stack
 
-## Getting Started
+### Frontend
+
+- **React.js** (Vite)
+- **face-api.js** - Real-time face recognition
+- **Tailwind CSS** - Modern styling
+- **jsPDF** - PDF report generation
+
+### Backend
+
+- **Node.js & Express** - API server
+- **MongoDB** - Database
+- **JWT** - Authentication
+- **Cloudinary** - Image storage
+
+### AI Components
+
+- **68-Point Face Landmark Detection**
+- **Face Descriptor Extraction**
+- **Euclidean Distance Matching**
+
+## 🚀 Getting Started
 
 ### Prerequisites
 
-- Node.js (version 14.x or higher)
-- MongoDB (local installation or MongoDB Atlas account)
-- npm or yarn package manager
+- Node.js ≥16.x
+- MongoDB Atlas account or local instance
+- Cloudinary account (for image storage)
 
 ### Installation
 
-1. **Clone the repository:**
+1. **Clone the repository**
 
    ```bash
    git clone https://github.com/Melvins-Simon/emarker-face-recognition.git
-   ```
-
-2. **Navigate to the project directory:**
-
-   ```bash
    cd emarker-face-recognition
    ```
 
-3. **Install dependencies:**
+2. **Set up environment variables**  
+   Create `.env` files in both `server/` and `client/` with:
 
-   - **Backend:**
-     ```bash
-     cd server
-     npm install
-     ```
-   - **Frontend:**
-     ```bash
-     cd ../client
-     npm install
-     ```
+# Server: .env
 
-### Running the Application
+```bash
 
-1. **Start the backend server:**
+ MONGO_URI=your_mongo_uri
+ PORT=5000
+ NODE_ENV=development
+ SECRETE_KEY=your_secret_key
+ RESET_PASSWORD_LINK=http://localhost:5173/auth/reset-password/
+ NODEMAILER_PASSWD=your_nodemailer_app_password
+ NODEMAILER_USER=nodemailer_user_email
+ CLIENT_URL= http://localhost:5173
+ CLOUDINARY_CLOUD_NAME=your_cloudinary_name
+ CLOUDINARY_API_KEY=api_key
+ CLOUDINARY_API_SECRET=api_secret_key
+```
 
-   ```bash
-   cd server
-   npm run server
-   ```
-
-   The backend server will run on `http://localhost:5000`.
-
-2. **Start the frontend development server:**
+3. **Install dependencies**
 
    ```bash
-   cd ../client
-   npm run dev
+   # Server
+   cd server && npm install
+
+   # Client
+   cd ../client && npm install
    ```
 
-   The frontend will be accessible at `http://localhost:5173`.
+4. **Run the application**
 
-## Project Structure
+   ```bash
+   # Start backend
+   cd server && npm run server
+
+   # Start frontend (in new terminal)
+   cd client && npm run dev
+   ```
+
+## 📂 Project Structure
 
 ```
-emarker-face-recognition/
+emarker/
 ├── server/
-│   ├── controllers/
-│   ├── models/
-│   ├── routes/
-│   ├── middleware/
-│   ├── utils/
-│   └── server.js
-|
+│   ├── controllers/       # Route controllers
+│   ├── models/            # MongoDB schemas
+│   ├── routes/            # API endpoints
+│   ├── email/             # Email templates and functions
+│   └── utils/             # Face recognition utils and nodemailer libs
+│
 └── client/
-    ├── public/
-    └── src/
-        ├── components/
-        ├── pages/
-        ├── assets/
-        ├── contexts/
-        ├── hooks/
-        ├── layouts/
-        ├── utils/
-        ├── styles/
-        ├── index.css
-        ├── App.jsx
-        └── main.jsx
+    ├── src/
+    │   ├── components/    # Reusable UI components
+    │   ├── pages/         # Route pages
+    │   ├── store/         # Zustand state management
+    │   ├── hooks/         # Custom hooks
 ```
 
-- **server/**: Contains the Express.js server, routes, controllers, models, and middleware.
-- **client/**: Contains the React application source code.
+## 🔧 Key Functionality
 
-## API Endpoints
+### 1. Face Enrollment Workflow
 
-- **`POST /api/auth/signup`**: Register a new user.
-- **`POST /api/auth/signin`**: Authenticate a user and return a JWT.
-- **`POST /api/auth/forgot-password`**: sends forgot password token to user.
-- **`POST /api/auth/reset-password`**: sends link for reseting password.
-- **`POST /api/auth/signout`**: Logs out user.
-- **`POST /api/students/enroll`**: Enroll a student's face data.
-- **`POST /api/attendance/mark`**: Mark attendance for a recognized face.
-- **`GET /api/attendance`**: Retrieve attendance records.
+```mermaid
+sequenceDiagram
+    Student->>Frontend: Access enrollment portal
+    Frontend->>Webcam: Capture face images (5 angles)
+    Frontend->>Cloudinary: Upload face descriptors
+    Cloudinary-->>Backend: Store face metadata
+    Backend->>MongoDB: Save student profile
+```
 
-## Contributing
+### 2. Attendance Marking Process
 
-Contributions are welcome! Please fork the repository and create a pull request with your changes.
+```mermaid
+flowchart TD
+    A[Lecturer starts session] --> B[Webcam activates]
+    B --> C{Face Detected?}
+    C -->|Yes| D[Match against enrolled faces]
+    C -->|No| B
+    D --> E[Mark attendance]
+    E --> F[Save to database]
+```
 
-## License
+## 📜 API Documentation
 
-This project is licensed under the MIT License.
+| Endpoint                           | Method            | Description                      |
+| ---------------------------------- | ----------------- | -------------------------------- |
+| `/api/auth/*`                      | [POST,GET,DELETE] | Authentications                  |
+| `/api/mark-attendance`             | POST              | Initiate attendance session      |
+| `/api/dash/get-courses`            | GET               | Get attendance records           |
+| `/api/faces`                       | GET               | Training dataset from cloudinary |
+| `/api/student/upload-face-dataset` | POST              | Upload dataset to cloudinary     |
 
-## Acknowledgements
+[![View Full API Docs](https://img.shields.io/badge/View_Full_API_Documentation-FF6C37?style=for-the-badge)](https://documenter.getpostman.com/view/39583603/2sB2j68AA3)
 
-- [face-api.js](https://justadudewhohacks.github.io/face-api.js/docs/index.html) for providing the face detection and recognition functionality.
+## 🧪 Testing the System
+
+1. **Admin Credentials**
+
+   ```
+   Register-->Login as Admin
+   ```
+
+2. **Sample Test Flow**
+   - Admin creates course "CS-101"
+   - Lecturer starts session and student's attenance marked with their faces automatically.
+   - Report download.
+
+![Attendance Report](/client/public/report.png)  
+_Sample PDF attendance report_
+
+## 🚨 Troubleshooting
+
+**Issue**: Face detection not working  
+✅ **Solution**:
+
+- Ensure proper lighting conditions
+- Check camera permissions
+- Verify face-api.js models are loaded
+
+**Issue**: Cloudinary upload fails  
+✅ **Solution**:
+
+- Validate CLOUDINARY_URL in .env
+- Check network connectivity
+
+## 📜 License
+
+MIT License - See [LICENSE](LICENSE) for details
+
+## 🙏 Acknowledgements
+
+- **face-api.js** team for the powerful recognition library
+- **Cloudinary** for media storage solutions
+- **Vite** team for the blazing-fast build tool
+
+---
+
+Developed with ❤️ by [Melvins Simon](https://github.com/Melvins-Simon)
+
+```
+
+```
