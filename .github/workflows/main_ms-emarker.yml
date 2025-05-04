@@ -1,36 +1,68 @@
-name: Deploy React Client
+name: Azure Static Web Apps CI/CD
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
     paths:
       - 'client/**'  # Only trigger when client files change
+  pull_request:
+    types: [opened, synchronize, reopened, closed]
+    branches: [main]
+
+env:
+  NODE_OPTIONS: '--experimental-global-webcrypto'  # Global crypto fix
 
 jobs:
-  deploy-client:
+  build_and_deploy:
+    if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.action != 'closed')
     runs-on: ubuntu-latest
     environment: production
-    defaults:
-      run:
-        working-directory: client
-
+    permissions:
+      id-token: write
+      contents: read
+      deployments: write
+    
     steps:
       - uses: actions/checkout@v4
-      
+        with:
+          submodules: recursive
+          fetch-depth: 0
+          
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '18.x'
+          node-version: '20.x'
+          cache: 'npm'
+          cache-dependency-path: 'client/package-lock.json'
           
-      - name: Install & Build
-        run: |
-          npm install
-          npm run build
+      - name: Install dependencies
+        working-directory: client
+        run: npm ci --prefer-offline
+          
+      - name: Build with Vite
+        working-directory: client
+        run: npm run build
+          
+      - name: Verify build output
+        working-directory: client
+        run: ls -la dist/
           
       - name: Deploy to Azure Static Web Apps
         uses: Azure/static-web-apps-deploy@v1
         with:
-          azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_JOLLY_HILL_07E8AD610 }}
-          app_location: "client"
-          output_location: "build"  # For CRA. Use "dist" for Vite
+          azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_JOLLY_HILL_07E8AD610 }}  
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          action: 'upload'
+          app_location: 'client'
+          output_location: 'dist'
           skip_app_build: true
+          verbose: true
+
+  close_pull_request:
+    if: github.event_name == 'pull_request' && github.event.action == 'closed'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: Azure/static-web-apps-deploy@v1
+        with:
+          azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_JOLLY_HILL_07E8AD610 }} 
+          action: 'close'
