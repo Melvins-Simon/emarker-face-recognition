@@ -2,6 +2,7 @@ import React, { useContext, useState } from "react";
 import { useAuthstore } from "../store/Authstore";
 import { Loader } from "lucide-react";
 import { Globalstate } from "../contexts/Usecontext";
+import { useGlobalstore } from "../store/Globalstore";
 
 const VerificationCode = ({ userData }) => {
   const { cod, setcod } = useContext(Globalstate);

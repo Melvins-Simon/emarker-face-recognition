@@ -2,7 +2,7 @@ import { createContext, useState } from "react";
 
 export const Globalstate = createContext(null);
 
-function Globalcontext({ children }) {
+function GlobalContext({ children }) {
   const [role, setRole] = useState(() => {
     const role = localStorage.getItem("role");
     if (role) return role;
@@ -19,4 +19,4 @@ function Globalcontext({ children }) {
   );
 }
 
-export default Globalcontext;
+export default GlobalContext;

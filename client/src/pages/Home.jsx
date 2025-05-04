@@ -1,6 +1,7 @@
 import React from "react";
 import { Button, Logo } from "../components";
 import { Link } from "react-router-dom";
+import toast from "react-hot-toast";
 const Home = () => {
   return (
     <div className="relative w-screen h-screen overflow-hidden">
@@ -40,10 +41,12 @@ const Home = () => {
           <div className="text-center font-semibold text-lg animate-bounce">
             <span className="textgr ">Fast, Accurate & Contactless!</span>
           </div>
-          <div className="flex justify-center items-center gap-3">
+          <div className="flex justify-center items-center max-md:hidden gap-3">
             <Link
               className="bg-white w-[30%] text-indigo-600 hover:text-white hover:bg-indigo-600  active:opacity-50 trans text-center py-2 rounded-md cursor-pointer font-semibold"
-              to={"#"}
+              onClick={() =>
+                toast.error("This feature is still under constructio! 🚧 ")
+              }
             >
               About us
             </Link>

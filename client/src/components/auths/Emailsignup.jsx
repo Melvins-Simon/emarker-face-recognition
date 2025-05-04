@@ -11,6 +11,7 @@ const Emailsignup = () => {
   const navigate = useNavigate();
   const { role, cod } = useContext(Globalstate);
   const { isLoading2, verifyEmail, error } = useAuthstore();
+
   const defaultData = {
     username: "",
     email: "",

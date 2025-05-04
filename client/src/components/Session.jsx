@@ -2,8 +2,14 @@ import React, { useEffect, useRef, useState, useCallback } from "react";
 import Webcam from "react-webcam";
 import * as faceapi from "face-api.js";
 import axios from "axios";
+import { StopCircle } from "lucide-react";
+import { useGlobalstore } from "../store/Globalstore";
+import { Link } from "react-router-dom";
+import formattedDate from "../utils/date.js";
 
 const FaceRecognition = () => {
+  const { user, mark_attendance } = useGlobalstore();
+
   // Refs
   const webcamRef = useRef(null);
   const canvasRef = useRef(null);
@@ -12,19 +18,20 @@ const FaceRecognition = () => {
   const [modelsLoaded, setModelsLoaded] = useState(false);
   const [cloudinaryFaces, setCloudinaryFaces] = useState([]);
   const [labeledDescriptors, setLabeledDescriptors] = useState([]);
-  const [recognizedFaces, setRecognizedFaces] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [userId, setUserId] = useState(null);
-  const [lastLogged, setLastLogged] = useState({});
 
-  // Constants
+  // Track students
+  const [detectedStudents, setDetectedStudents] = useState(new Map());
+  const [markedStudents, setMarkedStudents] = useState(new Set());
+
+  // Configuration
   const MIN_FACE_SIZE = 50;
   const MIN_ACCURACY = 60;
-  const MAX_TRACKED_FACES = 10;
-  const FACE_TIMEOUT = 3000; // 3 seconds
+  const DETECTION_COOLDOWN = 5000; // 5 seconds
+  const courseID = localStorage.getItem("courseuid") || "";
 
-  // Load models
+  // Load face detection models
   useEffect(() => {
     const loadModels = async () => {
       try {
@@ -43,7 +50,7 @@ const FaceRecognition = () => {
     loadModels();
   }, []);
 
-  // Fetch face data
+  // Fetch face data from backend
   useEffect(() => {
     if (!modelsLoaded) return;
 
@@ -60,7 +67,7 @@ const FaceRecognition = () => {
     fetchFaces();
   }, [modelsLoaded]);
 
-  // Process descriptors
+  // Process face descriptors
   useEffect(() => {
     if (!modelsLoaded || cloudinaryFaces.length === 0) return;
 
@@ -69,10 +76,6 @@ const FaceRecognition = () => {
         const processed = await Promise.all(
           cloudinaryFaces.map(async (face) => {
             try {
-              const name = face.public_id.split("/")[1].split("-")[0];
-              const userId = face.asset_folder;
-              setUserId(userId);
-
               const img = await faceapi.fetchImage(face.secure_url);
               const detections = await faceapi
                 .detectAllFaces(img, new faceapi.TinyFaceDetectorOptions())
@@ -81,7 +84,7 @@ const FaceRecognition = () => {
 
               return detections.length > 0
                 ? new faceapi.LabeledFaceDescriptors(
-                    name,
+                    face.public_id,
                     detections.map((d) => d.descriptor)
                   )
                 : null;
@@ -103,94 +106,106 @@ const FaceRecognition = () => {
     processDescriptors();
   }, [cloudinaryFaces, modelsLoaded]);
 
-  // Log detection
-  const logDetection = async (match, detection, accuracy) => {
-    const matchedFace = cloudinaryFaces.find((face) => {
-      const name = face.public_id.split("/")[1].split("-")[0];
-      return name === match.label;
-    });
+  // Validated mark attendance function
+  const markAttendance = useCallback(
+    async (studentId) => {
+      if (!courseID || !studentId) {
+        console.error("Invalid attendance data:", { courseID, studentId });
+        return false;
+      }
 
-    if (matchedFace) {
-      const logData = {
-        timestamp: new Date().toISOString(),
-        userId: userId,
-        matchedFace: {
-          public_id: matchedFace.public_id,
-          secure_url: matchedFace.secure_url,
-          asset_id: matchedFace.asset_id,
-          name: match.label,
-        },
-        detection: {
-          accuracy: accuracy.toFixed(1),
-          box: detection.detection.box,
-          landmarks: detection.landmarks,
-        },
-      };
-      console.log("Detection logged:", logData);
-    }
-  };
+      try {
+        const response = await mark_attendance(courseID, studentId);
+        if (response?.success) {
+          setMarkedStudents((prev) => new Set(prev).add(studentId));
+          return true;
+        }
+        return false;
+      } catch (err) {
+        return false;
+      }
+    },
+    [courseID, mark_attendance]
+  );
 
-  // Draw face box helper
-  const drawFaceBox = (ctx, box, label, accuracy, color) => {
-    const width = box.width * 1.1;
-    const height = width * 1.1;
-    const x = box.x - (width - box.width) / 2;
-    const y = box.y - (height - box.height) / 2;
+  // Draw face boxes on canvas
+  const drawFaceBoxes = useCallback(
+    (detections, matches) => {
+      const ctx = canvasRef.current?.getContext("2d");
+      if (!ctx || !webcamRef.current?.video) return;
 
-    // Draw box
-    ctx.beginPath();
-    ctx.roundRect(x, y, width, height, 10);
-    ctx.strokeStyle = color;
-    ctx.lineWidth = 3;
-    ctx.stroke();
+      // Clear canvas
+      ctx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
 
-    // Draw label
-    const text = `${label} (${accuracy}%)`;
-    ctx.font = "bold 14px Arial";
-    const textWidth = ctx.measureText(text).width;
+      // Draw each detection
+      detections.forEach((detection, i) => {
+        const match = matches[i] || { label: "Unknown", distance: 1 };
+        const box = detection.detection.box;
+        const accuracy = ((1 - match.distance) * 100).toFixed(1);
 
-    // Label background
-    ctx.fillStyle = color;
-    ctx.beginPath();
-    ctx.roundRect(x, y + height + 2, textWidth + 16, 24, [0, 0, 10, 10]);
-    ctx.fill();
+        if (match.label !== "Unknown") {
+          const studentId = match.label.split("/")[1].split("-")[1];
+          const isMarked = markedStudents.has(studentId);
 
-    // Label text
-    ctx.fillStyle = "#000000";
-    ctx.fillText(text, x + 8, y + height + 18);
-  };
+          // Draw face box
+          ctx.beginPath();
+          ctx.roundRect(box.x, box.y, box.width, box.height, 10);
+          ctx.strokeStyle = isMarked ? "#00FF00" : "#FFFF00";
+          ctx.lineWidth = 3;
+          ctx.stroke();
 
-  // Draw detections
-  const drawDetections = useCallback((detections, matches) => {
-    const ctx = canvasRef.current.getContext("2d", {
-      willReadFrequently: true,
-    });
-    ctx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
+          // Draw label
+          const name = match.label.split("/")[1].split("-")[0];
+          const statusText = isMarked ? "PRESENT" : "MARKED";
+          const text = `${name} (${accuracy}%) - ${statusText}`;
+          ctx.font = "bold 14px Arial";
+          const textWidth = ctx.measureText(text).width;
 
-    detections.forEach((detection, i) => {
-      const match = matches[i] || { label: "Unknown", distance: 1 };
-      const box = detection.detection.box;
-      const accuracy = ((1 - match.distance) * 100).toFixed(1);
-      const color = match.label !== "Unknown" ? "#00FF00" : "#FF0000";
+          // Label background
+          ctx.fillStyle = isMarked ? "#00FF00" : "#FFFF00";
+          ctx.beginPath();
+          ctx.roundRect(
+            box.x,
+            box.y + box.height + 2,
+            textWidth + 16,
+            24,
+            [0, 0, 10, 10]
+          );
+          ctx.fill();
 
-      drawFaceBox(ctx, box, match.label, accuracy, color);
-    });
-  }, []);
+          // Label text
+          ctx.fillStyle = "#000000";
+          ctx.fillText(text, box.x + 8, box.y + box.height + 18);
+        }
+      });
+    },
+    [markedStudents]
+  );
 
-  // Main detection function
+  // Main face detection function
   const detectFaces = useCallback(async () => {
-    if (!webcamRef.current || !modelsLoaded || labeledDescriptors.length === 0)
+    if (
+      !webcamRef.current ||
+      !modelsLoaded ||
+      labeledDescriptors.length === 0
+    ) {
       return;
+    }
 
     const video = webcamRef.current.video;
     if (!video || video.readyState !== 4) return;
 
-    if (canvasRef.current.width !== video.videoWidth) {
+    // Set canvas dimensions to match video
+    if (
+      canvasRef.current.width !== video.videoWidth ||
+      canvasRef.current.height !== video.videoHeight
+    ) {
       canvasRef.current.width = video.videoWidth;
       canvasRef.current.height = video.videoHeight;
     }
 
     try {
+      // Detect faces
       const detections = await faceapi
         .detectAllFaces(
           video,
@@ -202,6 +217,7 @@ const FaceRecognition = () => {
         .withFaceLandmarks()
         .withFaceDescriptors();
 
+      // Filter valid detections
       const validDetections = detections.filter((det) => {
         const box = det.detection.box;
         return box.width > MIN_FACE_SIZE && box.height > MIN_FACE_SIZE;
@@ -209,47 +225,50 @@ const FaceRecognition = () => {
 
       if (validDetections.length > 0) {
         const faceMatcher = new faceapi.FaceMatcher(labeledDescriptors);
-        const newMatches = validDetections.map((detection) =>
-          faceMatcher.findBestMatch(detection.descriptor)
+        const newDetectedStudents = new Map(detectedStudents);
+        const matches = validDetections.map((det) =>
+          faceMatcher.findBestMatch(det.descriptor)
         );
-
         const now = Date.now();
-        const updatedRecognizedFaces = [...recognizedFaces];
+        let needsUpdate = false;
 
-        newMatches.forEach((match, index) => {
+        // Draw detections immediately
+        drawFaceBoxes(validDetections, matches);
+
+        for (let i = 0; i < matches.length; i++) {
+          const match = matches[i];
           const accuracy = (1 - match.distance) * 100;
+
           if (accuracy > MIN_ACCURACY && match.label !== "Unknown") {
-            const faceId = `${match.label}-${now}`;
+            const studentId = match.label.split("/")[1].split("-")[1];
+            const existing = detectedStudents.get(studentId);
 
-            updatedRecognizedFaces.push({
-              id: faceId,
-              label: match.label,
-              accuracy,
-              timestamp: now,
-              color: "#00FF00",
-            });
+            if (!existing || now - existing.timestamp > DETECTION_COOLDOWN) {
+              newDetectedStudents.set(studentId, {
+                label: match.label,
+                accuracy,
+                timestamp: now,
+                detectionBox: validDetections[i].detection.box,
+              });
+              needsUpdate = true;
 
-            if (!lastLogged[match.label] || now - lastLogged[match.label] > 0) {
-              logDetection(match, validDetections[index], accuracy);
-              setLastLogged((prev) => ({ ...prev, [match.label]: now }));
+              if (!markedStudents.has(studentId)) {
+                await markAttendance(studentId);
+              }
             }
           }
-        });
+        }
 
-        // Filter and limit faces
-        const filteredFaces = updatedRecognizedFaces
-          .filter(
-            (face, index, self) =>
-              index === self.findIndex((f) => f.label === face.label)
-          )
-          .slice(0, MAX_TRACKED_FACES);
-
-        setRecognizedFaces(filteredFaces);
-        drawDetections(validDetections, newMatches);
+        if (needsUpdate) {
+          setDetectedStudents(newDetectedStudents);
+        }
       } else {
-        // Clear canvas when no faces detected
+        // Clear canvas if no faces detected
         const ctx = canvasRef.current.getContext("2d");
         ctx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
+        if (detectedStudents.size > 0) {
+          setDetectedStudents(new Map());
+        }
       }
     } catch (err) {
       console.error("Detection error:", err);
@@ -257,12 +276,16 @@ const FaceRecognition = () => {
   }, [
     modelsLoaded,
     labeledDescriptors,
-    recognizedFaces,
-    lastLogged,
-    drawDetections,
+    detectedStudents,
+    markedStudents,
+    markAttendance,
+    drawFaceBoxes,
+    MIN_FACE_SIZE,
+    MIN_ACCURACY,
+    DETECTION_COOLDOWN,
   ]);
 
-  // Detection loop
+  // Start detection loop
   useEffect(() => {
     if (!modelsLoaded || labeledDescriptors.length === 0) return;
 
@@ -276,25 +299,41 @@ const FaceRecognition = () => {
     return () => cancelAnimationFrame(animationFrameId);
   }, [modelsLoaded, labeledDescriptors, detectFaces]);
 
+  // Convert detectedStudents map to array for rendering
+  const recognizedFaces = Array.from(detectedStudents.entries()).map(
+    ([studentId, data]) => ({
+      id: `${studentId}-${data.timestamp}`,
+      label: data.label,
+      studentId,
+      accuracy: data.accuracy,
+      timestamp: data.timestamp,
+    })
+  );
+
   return (
     <div className="h-screen w-screen flex flex-col p-4 md:p-8 bg-gray-100">
       <div className="flex items-center justify-between">
-        <div className="text-green-600 font-bold font-tektur text-xl ">
+        <div className="text-green-600 font-bold font-tektur text-xl">
           SESSION IN PROGRESS...
         </div>
-        <div className="text-gray-900 ">
-          <h1 className=" font-tektur  font-semibold">
-            Knowledge Based System
+        <Link
+          to={`/dash/lecturer/${user?._id}`}
+          className="text-white font-semibold flex text-sm justify-center items-center gap-3 cursor-pointer bg-gradient-to-br from-violet-600 to-red-600 py-1 px-3 hover:opacity-80 active:opacity-50 trans rounded-md"
+        >
+          End Session <StopCircle />
+        </Link>
+        <div className="text-gray-900">
+          <h1 className="font-tektur font-semibold">
+            {localStorage.getItem("courseuidc") || "Course"}
           </h1>
           <span className="flex gap-3 text-indigo-500">
-            {" "}
             <span>
-              <span className="font-semibold font-tektur">STARTED:</span> 8:16AM
+              <span className="font-semibold font-tektur">STARTED:</span>{" "}
+              {formattedDate}
             </span>
             <span>
-              {" "}
-              <span className="font-semibold font-tektur">lECTURER:</span>
-              Jobfull
+              <span className="font-semibold font-tektur">LECTURER:</span>
+              {localStorage.getItem("user") || "Professor"}
             </span>
           </span>
         </div>
@@ -333,32 +372,6 @@ const FaceRecognition = () => {
                 className="absolute top-0 left-0 w-full h-full pointer-events-none"
               />
             </div>
-          </div>
-
-          <div className="mt-4 bg-white p-4 rounded shadow">
-            <h2 className="font-semibold text-lg mb-2 text-blue-900">
-              Students Marked
-            </h2>
-            {recognizedFaces.length > 0 ? (
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
-                {recognizedFaces.map((face) => (
-                  <div
-                    key={face.id}
-                    className="flex items-center p-2 bg-green-50 rounded"
-                  >
-                    <div className="w-3 h-3 rounded-full bg-green-500 mr-2"></div>
-                    <span className="font-medium text-gray-700">
-                      {face.label}
-                    </span>
-                    <span className="ml-auto text-sm text-gray-500">
-                      {new Date(face.timestamp).toLocaleTimeString()}
-                    </span>
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <p className="text-gray-700">No faces detected yet</p>
-            )}
           </div>
         </>
       )}

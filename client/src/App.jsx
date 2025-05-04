@@ -17,15 +17,32 @@ import {
   Studentdash,
   Studentinfo,
 } from "./components";
-
 import ProtectedRoute from "./components/Routeguard";
 import { useAuthstore } from "./store/Authstore";
 import FaceRecognition from "./components/Session";
+import GradientLoader, { PageLoader } from "./components/Loader";
+
 const App = () => {
   const { isAuthenticated, user } = useAuthstore();
+
+  const [loading, setLoading] = React.useState(true);
+
+  React.useEffect(() => {
+    // Simulate auth check completion
+    const timer = setTimeout(() => setLoading(false), 1000);
+    return () => clearTimeout(timer);
+  }, []);
+
+  if (loading) {
+    return <PageLoader />;
+  }
+
   return (
     <Routes>
+      {/* Public Routes */}
       <Route element={<Home />} path="/" exact />
+
+      {/* Auth Routes (only accessible when not authenticated) */}
       {!isAuthenticated && (
         <Route element={<Authlayout />}>
           <Route element={<Signup />} path="/auth/sign-up" />
@@ -42,7 +59,8 @@ const App = () => {
           <Route element={<Resetpassword />} path="/auth/reset-password/:id" />
         </Route>
       )}
-      {/* Guarded Routes */}
+
+      {/* Protected Dashboard Routes */}
       <Route
         element={
           <ProtectedRoute>
@@ -50,52 +68,57 @@ const App = () => {
           </ProtectedRoute>
         }
       >
-        <Route element={<Navigate to={"/z"} replace />} path="/auth/sign-up" />
+        {/* Redirect auth paths away from dashboard */}
+        <Route element={<Navigate to="/z" replace />} path="/auth/sign-up" />
         <Route
-          element={<Navigate to={"/z"} replace />}
+          element={<Navigate to="/z" replace />}
           path="/auth/sign-up/email"
         />
-        <Route element={<Navigate to={"/z"} replace />} path="/auth/sign-in" />
+        <Route element={<Navigate to="/z" replace />} path="/auth/sign-in" />
         <Route
-          element={<Navigate to={"/z"} replace />}
+          element={<Navigate to="/z" replace />}
           path="/auth/sign-in/email"
         />
         <Route
-          element={<Navigate to={"/z"} replace />}
+          element={<Navigate to="/z" replace />}
           path="/auth/sign-in/google/:fbURL"
         />
         <Route
-          element={<Navigate to={"/z"} replace />}
+          element={<Navigate to="/z" replace />}
           path="/auth/sign-up/sso"
         />
 
-        {/* Defaults */}
-        {user?.role === "admin" ? (
-          <Route
-            element={<Navigate to={`/dash/admin/${user?._id}`} replace />}
-            path="/z"
-          />
-        ) : user?.role === "student" ? (
-          <Route
-            element={<Navigate to={`/dash/student/${user?._id}`} replace />}
-            path="/z"
-          />
-        ) : user?.role === "lecturer" ? (
-          <Route
-            element={<Navigate to={`/dash/lecturer/${user?._id}`} replace />}
-            path="/z"
-          />
-        ) : null}
+        {/* Role-based default redirect */}
+        {isAuthenticated && (
+          <>
+            {user?.role === "admin" && (
+              <Route
+                element={<Navigate to={`/dash/admin/${user._id}`} replace />}
+                path="/z"
+              />
+            )}
+            {user?.role === "student" && (
+              <Route
+                element={<Navigate to={`/dash/student/${user._id}`} replace />}
+                path="/z"
+              />
+            )}
+            {user?.role === "lecturer" && (
+              <Route
+                element={<Navigate to={`/dash/lecturer/${user._id}`} replace />}
+                path="/z"
+              />
+            )}
+          </>
+        )}
 
-        {/* Routes */}
-        <Route element={<Admindash />} path={`/dash/admin/${user?._id}`} />
-        <Route element={<Studentdash />} path={`/dash/student/${user?._id}`} />
-        <Route
-          element={<Lecturerdash />}
-          path={`/dash/lecturer/${user?._id}`}
-        />
+        {/* Dashboard Routes */}
+        <Route element={<Admindash />} path="/dash/admin/:id" />
+        <Route element={<Studentdash />} path="/dash/student/:id" />
+        <Route element={<Lecturerdash />} path="/dash/lecturer/:id" />
       </Route>
 
+      {/* Other Protected Routes */}
       <Route
         element={
           <ProtectedRoute>
@@ -105,16 +128,19 @@ const App = () => {
       >
         <Route element={<Studentinfo />} path="/student/info/:id" />
       </Route>
+
       <Route
         element={
           <ProtectedRoute>
             <FaceRecognition />
           </ProtectedRoute>
         }
-        path={`/face-recognition/session/${user?.id}`}
+        path="/face-recognition/session/:id"
       />
-      <Route element={<Notfound />} path="*" />
+
+      {/* Error Routes */}
       <Route element={<Notauthorized />} path="/not-authorized" />
+      <Route element={<Notfound />} path="*" />
     </Routes>
   );
 };

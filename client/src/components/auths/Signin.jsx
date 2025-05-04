@@ -58,7 +58,7 @@ const Signin = () => {
             <span>Email</span>
           </Link>
           <Link
-            to={`/auth/sign-up/sso`}
+            to={`/auth/sign-in/google/:fbURL`}
             className="roles hover:ring-blue-400 hover:text-blue-400 trans"
           >
             <img className="size-5" src={Google} />

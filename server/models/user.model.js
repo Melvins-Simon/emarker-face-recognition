@@ -26,6 +26,45 @@ const userSchema = new mongoose.Schema(
     images: {
       type: [String],
     },
+    courses: [
+      {
+        code: {
+          type: String,
+          required: true,
+        },
+        name: {
+          type: String,
+          required: true,
+        },
+        lecturer: {
+          type: String,
+          required: true,
+        },
+        studentsEnrolled: {
+          type: Number,
+          required: true,
+          default: 0,
+        },
+        attendance: [
+          {
+            studentName: {
+              type: String,
+            },
+            studentEmail: {
+              type: String,
+            },
+            date: {
+              type: Date,
+              default: Date.now,
+            },
+            status: {
+              type: String,
+              enum: ["present", "absent"],
+            },
+          },
+        ],
+      },
+    ],
     isVerified: {
       type: Boolean,
       default: false,

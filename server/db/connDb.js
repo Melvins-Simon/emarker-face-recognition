@@ -4,9 +4,9 @@ import "dotenv/config";
 async function conDb() {
   try {
     await mongoose.connect(process.env.MONGO_URI);
-    console.log("Database connection success.");
+    console.log("✅ MongoDB connected!");
   } catch (err) {
-    throw new Error(`Problem connecting to database -->${err.message}`);
+    throw new Error("❌ MongoDB connection failed: " + err.message);
   }
 }
 

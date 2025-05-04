@@ -11,6 +11,8 @@ import { comparePasswd, hashPasswd } from "../utils/hashing.js";
 import { generateJwtAsetCookie } from "../utils/jwtoken.js";
 import { splitName } from "../utils/returnFName.js";
 
+// AUTHENTICATION
+
 // signup
 export const signup = async (req, res, next) => {
   try {
@@ -309,6 +311,295 @@ export const getUser = async (req, res) => {
     res.status(500).json({
       success: false,
       message: `Internal server error ---> ${error.message}`,
+    });
+  }
+};
+
+// DASHBOARD
+
+export const get_all_users = async (req, res) => {
+  const userId = req.userId;
+  try {
+    if (!userId) {
+      return res.status(403).json({
+        success: false,
+        message: "Unauthorized, invalid or expired signature.",
+      });
+    }
+
+    // Get all non-admin users with counts
+    const [users, counts] = await Promise.all([
+      User.find(
+        { role: { $ne: "admin" } },
+        { password: 0, __v: 0 } // Exclude sensitive fields
+      ).lean(),
+
+      // Get counts of lecturers and students
+      User.aggregate([
+        {
+          $match: {
+            role: { $ne: "admin" }, // Exclude admins from counts too
+          },
+        },
+        {
+          $group: {
+            _id: null,
+            lecturers: {
+              $sum: { $cond: [{ $eq: ["$role", "lecturer"] }, 1, 0] },
+            },
+            students: {
+              $sum: { $cond: [{ $eq: ["$role", "student"] }, 1, 0] },
+            },
+            total: { $sum: 1 },
+          },
+        },
+      ]),
+    ]);
+
+    const processedUsers = users.map((user) => {
+      const userObj = { ...user };
+      if (user.role === "student" || user.role === "lecturer") {
+        delete userObj.images;
+      }
+      return userObj;
+    });
+
+    const stats = counts[0] || { lecturers: 0, students: 0, total: 0 };
+
+    res.status(200).json({
+      success: true,
+      users: processedUsers,
+      stats: {
+        lecturers: stats.lecturers,
+        students: stats.students,
+        total: stats.total,
+      },
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: `Internal server error ---> ${error.message}`,
+    });
+  }
+};
+
+export const add_course = async (req, res) => {
+  try {
+    const { code, name, lectureId } = req.body;
+
+    if (!code || !name || !lectureId) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Provide all required details!" });
+    }
+
+    const lecture = await User.findById(lectureId);
+    if (!lecture) {
+      return res.status(404).json({ message: "Lecture not found" });
+    }
+
+    lecture.courses.push({
+      code,
+      name,
+      lecturer: lecture.username,
+      studentsEnrolled: 0,
+    });
+
+    const courses = await lecture.save();
+
+    res.status(200).json({
+      message: "Course added successfully",
+      lecture: courses._doc.courses,
+    });
+  } catch (error) {
+    console.error("Error adding course to lecture:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+export const get_courses = async (req, res) => {
+  try {
+    const lecturers = await User.find({ role: "lecturer" })
+      .select("_id username courses")
+      .lean();
+
+    // Combine all courses into one array with lecturer info
+    const allCourses = lecturers.flatMap((lecturer) =>
+      lecturer.courses.map((course) => ({
+        ...course,
+        lecturerId: lecturer._id,
+        lecturerName: lecturer.username,
+      }))
+    );
+
+    res.status(200).json({
+      success: true,
+      lecturers: allCourses,
+    });
+  } catch (error) {
+    console.error("Error fetching courses:", error);
+    res.status(500).json({
+      success: false,
+      message: "Server error",
+      error: error.message,
+    });
+  }
+};
+export const deleteCourseById = async (req, res) => {
+  try {
+    const { courseId } = req.params;
+
+    // 1. Delete the course from all lecturers
+    const deleteResult = await User.updateMany(
+      { "courses._id": courseId },
+      { $pull: { courses: { _id: courseId } } }
+    );
+
+    if (deleteResult.modifiedCount === 0) {
+      return res.status(404).json({
+        success: false,
+        message: "Course not found in any lecturer's courses",
+      });
+    }
+
+    // 2. Get all lecturers with their updated courses
+    const lecturers = await User.find({ role: "lecturer" })
+      .select("_id username courses")
+      .lean();
+
+    // 3. Format the response
+    const response = {
+      success: true,
+      message: `Course ${courseId} deleted successfully from ${deleteResult.modifiedCount} lecturer(s)`,
+      data: lecturers.map((lecturer) => ({
+        lecturerId: lecturer._id,
+
+        courses: lecturer.courses.map((course) => ({
+          id: course._id,
+          code: course.code,
+          name: course.name,
+          studentsEnrolled: course.studentsEnrolled,
+          lecturer: lecturer.username,
+        })),
+      })),
+    };
+
+    res.status(200).json(response);
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Error deleting course",
+      error: error.message,
+    });
+  }
+};
+
+export const markAttendance = async (req, res) => {
+  try {
+    const { courseId, studentId } = req.body;
+
+    // 1. Validate required fields
+    if (!courseId || !studentId) {
+      return res.status(400).json({
+        success: false,
+        message: "courseId and studentId are required",
+      });
+    }
+
+    // 2. Find the student
+    const student = await User.findOne({
+      _id: studentId,
+      role: "student",
+    }).select("username email");
+
+    if (!student) {
+      return res.status(404).json({
+        success: false,
+        message: "Student not found",
+      });
+    }
+
+    // 3. Find the lecturer and course
+    const lecturer = await User.findOne({
+      role: "lecturer",
+      "courses._id": courseId,
+    });
+
+    if (!lecturer) {
+      return res.status(404).json({
+        success: false,
+        message: "Course not found under any lecturer",
+      });
+    }
+
+    const course = lecturer.courses.id(courseId);
+    if (!course) {
+      return res.status(404).json({
+        success: false,
+        message: "Course subdocument not found",
+      });
+    }
+
+    // 4. Check for existing attendance using EMAIL (new validation)
+    const today = new Date().toDateString();
+    const alreadyMarked = course.attendance.some(
+      (record) =>
+        record.studentEmail === student.email && // Check by email
+        new Date(record.date).toDateString() === today
+    );
+
+    if (alreadyMarked) {
+      return res.status(400).json({
+        success: false,
+        message: "Attendance already marked for this student's email today",
+      });
+    }
+
+    // 5. Add new attendance
+    const newAttendance = {
+      studentId,
+      studentName: student.username,
+      studentEmail: student.email,
+      date: new Date(),
+      status: "present",
+    };
+
+    course.attendance.push(newAttendance);
+
+    // 6. Update studentsEnrolled (count unique emails)
+    const uniqueStudents = new Set(
+      course.attendance.map((record) => record.studentEmail) // Track by email
+    );
+    course.studentsEnrolled = uniqueStudents.size;
+
+    await lecturer.save();
+
+    // 7. Return response
+    const createdAttendance = course.attendance[course.attendance.length - 1];
+
+    res.status(201).json({
+      success: true,
+      data: {
+        attendance: {
+          id: createdAttendance._id,
+          studentId: createdAttendance.studentId,
+          studentName: createdAttendance.studentName,
+          studentEmail: createdAttendance.studentEmail,
+          date: createdAttendance.date,
+          status: createdAttendance.status,
+        },
+        courseStats: {
+          studentsEnrolled: course.studentsEnrolled,
+          totalAttendanceRecords: course.attendance.length,
+        },
+      },
+    });
+  } catch (error) {
+    console.error("Attendance error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Server error",
+      error: error.message,
     });
   }
 };
