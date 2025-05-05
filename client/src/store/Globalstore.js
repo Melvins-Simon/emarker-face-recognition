@@ -32,6 +32,9 @@ export const useGlobalstore = create(
             },
             maxContentLength: Infinity,
             maxBodyLength: Infinity,
+          },
+          {
+            withCredentials: true,
           }
         );
 

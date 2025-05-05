@@ -8,10 +8,11 @@ export const generateJwtAsetCookie = (userId, res) => {
 
   res.cookie("authorization", token, {
     httpOnly: true,
-    secure: false,
+    secure: true,
     sameSite: "none",
-    domain: "ms-emarker-euhcbzb9gbf7ejgs.centralus-01.azurewebsites.net",
+    domain: ".azurewebsites.net",
     maxAge: 7 * 24 * 60 * 60 * 1000,
+    path: "/",
   });
 
   return token;

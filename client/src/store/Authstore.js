@@ -22,13 +22,19 @@ export const useAuthstore = create(
       set({ isLoading: false, error: null });
       try {
         set({ isLoading: true });
-        const response = await axios.post(`${API_URL}/signup`, {
-          username,
-          email,
-          password,
-          confirmPassword,
-          role,
-        });
+        const response = await axios.post(
+          `${API_URL}/signup`,
+          {
+            username,
+            email,
+            password,
+            confirmPassword,
+            role,
+          },
+          {
+            withCredentials: true,
+          }
+        );
         set({
           isLoading: false,
           message: response.data.message,
@@ -49,9 +55,15 @@ export const useAuthstore = create(
       set({ isLoading2: false, error: null });
       try {
         set({ isLoading2: true });
-        const response = await axios.post(`${API_URL}/verify-email`, {
-          verificationCode,
-        });
+        const response = await axios.post(
+          `${API_URL}/verify-email`,
+          {
+            verificationCode,
+          },
+          {
+            withCredentials: true,
+          }
+        );
         set({
           user: response.data.data,
           isLoading2: false,
@@ -71,7 +83,9 @@ export const useAuthstore = create(
       set({ isLoading: false, error: null });
       try {
         set({ isLoading: true });
-        const response = await axios.post(`${API_URL}/signout`);
+        const response = await axios.post(`${API_URL}/signout`, {
+          withCredentials: true,
+        });
         set({
           isLoading: false,
           message: response.data.message,
@@ -98,11 +112,17 @@ export const useAuthstore = create(
       set({ isLoading: false, error: null });
       try {
         set({ isLoading: true });
-        const response = await axios.post(`${API_URL}/signin`, {
-          email,
-          password,
-          role,
-        });
+        const response = await axios.post(
+          `${API_URL}/signin`,
+          {
+            email,
+            password,
+            role,
+          },
+          {
+            withCredentials: true,
+          }
+        );
         set({
           user: response.data.data,
           isLoading: false,
@@ -122,7 +142,9 @@ export const useAuthstore = create(
       set({ isCheckingAuth: false, error: null });
       try {
         set({ isCheckingAuth: true });
-        const response = await axios.get(`${API_URL}/check-auth`);
+        const response = await axios.get(`${API_URL}/check-auth`, {
+          withCredentials: true,
+        });
         set({
           user: response.data.user,
           isCheckingAuth: false,
@@ -145,9 +167,15 @@ export const useAuthstore = create(
       set({ isLoading: tfalserue, error: null });
       try {
         set({ isLoading: true });
-        const response = await axios.post(`${API_URL}/forgot-password`, {
-          email,
-        });
+        const response = await axios.post(
+          `${API_URL}/forgot-password`,
+          {
+            email,
+          },
+          {
+            withCredentials: true,
+          }
+        );
         set({
           message: response.data.message,
           isLoading: false,
@@ -168,10 +196,16 @@ export const useAuthstore = create(
       set({ isLoading: false, error: null });
       try {
         set({ isLoading: true });
-        const response = await axios.post(`${API_URL}/reset-password/${id}`, {
-          newPassword,
-          confirmNewPassword,
-        });
+        const response = await axios.post(
+          `${API_URL}/reset-password/${id}`,
+          {
+            newPassword,
+            confirmNewPassword,
+          },
+          {
+            withCredentials: true,
+          }
+        );
         set({
           message: response.data.message,
           isLoading: false,
@@ -196,6 +230,9 @@ export const useAuthstore = create(
           `${API_URL}/student/upload-face-dataset`,
           {
             images,
+          },
+          {
+            withCredentials: true,
           }
         );
         set({

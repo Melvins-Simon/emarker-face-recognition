@@ -21,6 +21,7 @@ app.use(
   cors({
     origin: "https://emarker-face-recognition.vercel.app",
     credentials: true,
+    exposedHeaders: ["set-cookie"],
   })
 );
 
