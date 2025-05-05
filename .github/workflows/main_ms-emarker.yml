@@ -1,84 +1,65 @@
-name: Azure Static Web Apps CI/CD
+name: Build and deploy Node.js app to Azure Web App - ms-emarker
 
 on:
   push:
-    branches: [main]
-    paths: 
-      - 'client/**'  # Only rebuild when client files change
+    branches:
+      - main
+  workflow_dispatch:
 
 jobs:
-  deploy:
+  build:
     runs-on: ubuntu-latest
-    environment: production
+    defaults:
+      run:
+        working-directory: server
+
     permissions:
-      id-token: write
       contents: read
-      deployments: write
 
     steps:
-      # 1. Checkout with full history
       - uses: actions/checkout@v4
-        with:
-          submodules: recursive
-          fetch-depth: 0
 
-      # 2. Setup Node.js 20.x
-      - name: Setup Node
+      - name: Set up Node.js version
         uses: actions/setup-node@v3
         with:
-          node-version: '20.x'
-          cache: 'npm'
-          cache-dependency-path: 'client/package-lock.json'
+          node-version: "18.x"
 
-      # 3. Optimized build process
-      - name: Build Client
-        working-directory: client
-        env:
-          NODE_OPTIONS: '--experimental-global-webcrypto'
+      - name: npm install, build, and test
         run: |
-          # Clean install
-          npm ci --prefer-offline
-          
-          # Build with Vite
-          npm run build
-          
-          # Azure-required configuration
-          echo '{
-            "routes": [
-              {
-                "route": "/*",
-                "serve": "/index.html", 
-                "statusCode": 200
-              }
-            ],
-            "navigationFallback": {
-              "rewrite": "/index.html"
-            },
-            "mimeTypes": {
-              ".wasm": "application/wasm"
-            }
-          }' > dist/routes.json
-          
-          # Remove unnecessary files
-          find dist/ -type f \( -name "*.map" -o -name "*.txt" \) -delete
+          npm install
+          npm run build --if-present
+          npm run test --if-present
 
-      # 4. Verify output
-      - name: Audit Build
-        working-directory: client
-        run: |
-          echo "=== Build Artifacts ==="
-          ls -lh dist/
-          echo -e "\n=== Total Files ===" 
-          find dist/ -type f | wc -l
+      - name: Zip artifact for deployment
+        run: zip -r release.zip .
 
-      # 5. Deploy with your EXACT secret name
-      - name: Deploy to Azure
-        uses: Azure/static-web-apps-deploy@v1
+      - name: Upload artifact for deployment job
+        uses: actions/upload-artifact@v4
         with:
-          azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_PROUD_MUD_02BBDB203 }}
-          repo_token: ${{ secrets.GITHUB_TOKEN }}
-          action: "upload"
-          app_location: "client"  # Source code
-          app_artifact_location: "dist"  # Built files
-          skip_app_build: true  # Critical for pre-built files
-          verbose: true
+          name: node-app
+          path: server/release.zip
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+    environment:
+      name: "Production"
+      url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
+
+    steps:
+      - name: Download artifact from build job
+        uses: actions/download-artifact@v4
+        with:
+          name: node-app
+
+      - name: Unzip artifact for deployment
+        run: unzip release.zip
+
+      - name: "Deploy to Azure Web App"
+        id: deploy-to-webapp
+        uses: azure/webapps-deploy@v3
+        with:
+          app-name: "ms-emarker"
+          slot-name: "Production"
+          package: .
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_910243E1C9934423A8101D3026AC0F63 }}
