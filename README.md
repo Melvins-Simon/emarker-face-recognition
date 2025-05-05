@@ -2,7 +2,7 @@
 
 **API ON AZURE CLOUD:** [Visit API](https://emarker-webapp-c9bthufna7ghagh6.eastus-01.azurewebsites.net/emarker-api-doc)
 
-**CLIENT ON VERCEL:** [Visit Site](https://emarker-webapp-c9bthufna7ghagh6.eastus-01.azurewebsites.net/) 
+**CLIENT ON AZURE CLOUD:** [Visit Site](https://emarker-webapp-c9bthufna7ghagh6.eastus-01.azurewebsites.net/) 
 
 
 ![Face Enrollment](/client/public/session.png)
