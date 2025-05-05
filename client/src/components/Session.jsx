@@ -63,7 +63,9 @@ const FaceRecognition = () => {
 
     const fetchFaces = async () => {
       try {
-        const res = await axios.get("http://localhost:5000/api/faces");
+        const res = await axios.get(
+          "https://emarker-webapp-c9bthufna7ghagh6.eastus-01.azurewebsites.net/api/faces"
+        );
         setCloudinaryFaces(res.data);
       } catch (err) {
         console.error("Error fetching faces:", err);
