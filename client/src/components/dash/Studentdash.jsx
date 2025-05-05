@@ -321,34 +321,6 @@ const StudentDash = () => {
           </div>
         </div>
       </main>
-
-      {/* Mobile Bottom Navigation */}
-      <nav className="sticky bottom-0 left-0 right-0 bg-white border-t flex justify-around py-3 md:hidden">
-        <Link
-          to="/courses"
-          className="flex flex-col items-center text-blue-600"
-          title="My Courses"
-        >
-          <BookOpenCheck className="size-6" />
-          <span className="text-xs mt-1">Courses</span>
-        </Link>
-        <Link
-          to={`/attendance/student-report/${selectedCourse}`}
-          className="flex flex-col items-center text-blue-600"
-          title="Reports"
-        >
-          <Download className="size-6" />
-          <span className="text-xs mt-1">Reports</span>
-        </Link>
-        <button
-          onClick={handleLogout}
-          className="flex flex-col items-center text-red-600"
-          title="Logout"
-        >
-          <LogOut className="size-6" />
-          <span className="text-xs mt-1">Logout</span>
-        </button>
-      </nav>
     </div>
   );
 };

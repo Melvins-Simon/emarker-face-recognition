@@ -327,32 +327,6 @@ const Lecturerdash = () => {
           </div>
         </div>
       </main>
-
-      {/* Mobile Bottom Navigation */}
-      <nav className="fixed bottom-0 left-0 right-0 bg-white border-t flex justify-around py-3 md:hidden">
-        <Link
-          to={`/face-recognition/session/${user?._id}`}
-          className="flex flex-col items-center text-indigo-700 cursor-pointer"
-        >
-          <BookCheck className="size-6" />
-          <span className="text-xs mt-1">Session</span>
-        </Link>
-        <button
-          onClick={() => handleDownloadReport(currentCourseId)}
-          className="flex flex-col items-center text-green-700 cursor-pointer"
-          disabled={isGenerating}
-        >
-          <Download className="size-6" />
-          <span className="text-xs mt-1">Reports</span>
-        </button>
-        <button
-          onClick={handleLogout}
-          className="flex flex-col items-center text-red-600 cursor-pointer"
-        >
-          <LogOut className="size-6" />
-          <span className="text-xs mt-1">Logout</span>
-        </button>
-      </nav>
     </div>
   );
 };
