@@ -18,7 +18,7 @@ app.use(cookieParser());
 app.use(
   cors({
     origin: [
-      "https://emarker-face-recognition.vercel.app",
+      "https://emarker-webapp-c9bthufna7ghagh6.eastus-01.azurewebsites.net",
       "http://localhost:5173",
     ],
     credentials: true,

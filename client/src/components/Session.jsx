@@ -129,9 +129,7 @@ const FaceRecognition = () => {
           courseID
         );
         const response = await axios.post(
-          import.meta.env.MODE === "development"
-            ? "http://localhost:5000/api/mark-attendance"
-            : "https://ms-emarker-euhcbzb9gbf7ejgs.centralus-01.azurewebsites.net/api/mark-attendance",
+          "https://emarker-webapp-c9bthufna7ghagh6.eastus-01.azurewebsites.net/api/mark-attendance",
           {
             courseId: courseID,
             studentId,

@@ -4,9 +4,8 @@ import toast from "react-hot-toast";
 import { persist } from "zustand/middleware";
 
 axios.defaults.withCredentials = true;
-const API_URL = import.meta.env.MODE
-  ? "http://localhost:5000/api/auth"
-  : "https://ms-emarker-euhcbzb9gbf7ejgs.centralus-01.azurewebsites.net/api/auth";
+const API_URL =
+  "https://emarker-webapp-c9bthufna7ghagh6.eastus-01.azurewebsites.net/api/auth";
 export const useAuthstore = create(
   persist((set) => ({
     user: null,
