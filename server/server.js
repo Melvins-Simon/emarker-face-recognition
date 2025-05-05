@@ -27,6 +27,15 @@ app.use(
   })
 );
 
+app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Credentials", "true");
+  res.header(
+    "Access-Control-Allow-Origin",
+    "https://emarker-face-recognition.vercel.app"
+  );
+  next();
+});
+
 // Serve static files
 app.use(express.static(path.join(__dirname, "public")));
 
