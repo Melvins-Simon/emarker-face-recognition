@@ -19,8 +19,9 @@ export const useAuthstore = create(
     isCheckingAuth: false,
     userID: null,
     signup: async ({ username, email, password, confirmPassword, role }) => {
-      set({ isLoading: true, error: null });
+      set({ isLoading: false, error: null });
       try {
+        set({ isLoading: true });
         const response = await axios.post(`${API_URL}/signup`, {
           username,
           email,
@@ -45,8 +46,9 @@ export const useAuthstore = create(
       }
     },
     verifyEmail: async (verificationCode) => {
-      set({ isLoading2: true, error: null });
+      set({ isLoading2: false, error: null });
       try {
+        set({ isLoading2: true });
         const response = await axios.post(`${API_URL}/verify-email`, {
           verificationCode,
         });
@@ -66,8 +68,9 @@ export const useAuthstore = create(
       }
     },
     signout: async () => {
-      set({ isLoading: true, error: null });
+      set({ isLoading: false, error: null });
       try {
+        set({ isLoading: true });
         const response = await axios.post(`${API_URL}/signout`);
         set({
           isLoading: false,
@@ -92,8 +95,9 @@ export const useAuthstore = create(
       }
     },
     signin: async ({ email, password, role }) => {
-      set({ isLoading: true, error: null });
+      set({ isLoading: false, error: null });
       try {
+        set({ isLoading: true });
         const response = await axios.post(`${API_URL}/signin`, {
           email,
           password,
@@ -115,8 +119,9 @@ export const useAuthstore = create(
       }
     },
     checkAuth: async () => {
-      set({ isCheckingAuth: true, error: null });
+      set({ isCheckingAuth: false, error: null });
       try {
+        set({ isCheckingAuth: true });
         const response = await axios.get(`${API_URL}/check-auth`);
         set({
           user: response.data.user,
@@ -131,15 +136,15 @@ export const useAuthstore = create(
         set({
           error: error.response.data.message,
           isCheckingAuth: false,
-          isLoading: false,
         });
         toast.error(error.response.data.message);
         throw error;
       }
     },
     forgot_password: async (email) => {
-      set({ isLoading: true, error: null });
+      set({ isLoading: tfalserue, error: null });
       try {
+        set({ isLoading: true });
         const response = await axios.post(`${API_URL}/forgot-password`, {
           email,
         });
@@ -160,8 +165,9 @@ export const useAuthstore = create(
       }
     },
     reset_password: async ({ newPassword, confirmNewPassword, id }) => {
-      set({ isLoading: true, error: null });
+      set({ isLoading: false, error: null });
       try {
+        set({ isLoading: true });
         const response = await axios.post(`${API_URL}/reset-password/${id}`, {
           newPassword,
           confirmNewPassword,
@@ -183,8 +189,9 @@ export const useAuthstore = create(
       }
     },
     upload_dataset: async (images) => {
-      set({ isLoading: true, error: null });
+      set({ isLoading: false, error: null });
       try {
+        set({ isLoading: true });
         const response = await axios.post(
           `${API_URL}/student/upload-face-dataset`,
           {

@@ -16,12 +16,16 @@ app.use((error, req, res, next) => {
 app.use(express.json({ limit: "50mb" }));
 app.use(express.urlencoded({ extended: true, limit: "50mb" }));
 app.use(cookieParser());
+
+app.options("*", cors());
 app.use(
   cors({
     origin: [
       "https://emarker-face-recognition.vercel.app",
       "http://localhost:5173",
     ],
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization", "Accept"],
     credentials: true,
   })
 );

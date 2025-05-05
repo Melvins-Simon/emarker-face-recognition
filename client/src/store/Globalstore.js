@@ -18,10 +18,8 @@ export const useGlobalstore = create(
     url: [],
     upload_image: async (frames, name, email) => {
       try {
-        // Keep the full data URI (including the prefix)
-        const images = frames.map((f) => f); // Don't split here
+        const images = frames.map((f) => f);
 
-        // Add loading state
         set({ isLoading: true, error: null });
 
         const response = await axios.post(
