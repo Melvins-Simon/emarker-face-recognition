@@ -10,7 +10,7 @@ export const generateJwtAsetCookie = (userId, res) => {
     httpOnly: true,
     secure: true,
     sameSite: "none",
-    domain: "emarker-face-recognition.vercel.app",
+    // domain: "emarker-face-recognition.vercel.app",
     maxAge: 7 * 24 * 60 * 60 * 1000,
     path: "/",
   });
