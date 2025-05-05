@@ -18,7 +18,10 @@ app.use(express.urlencoded({ extended: true, limit: "50mb" }));
 app.use(cookieParser());
 app.use(
   cors({
-    origin: [process.env.CLIENT_URL, "http://localhost:5173"],
+    origin: [
+      "https://emarker-face-recognition.vercel.app",
+      "http://localhost:5173",
+    ],
     credentials: true,
   })
 );
@@ -30,7 +33,5 @@ app.use("/api", imgRouter);
 // Server
 app.listen(process.env.PORT || 3000, (next) => {
   conDb(next);
-  console.log(
-    `🚀 Server running on http://localhost:${process.env.PORT || 3000}/`
-  );
+  console.log(`🚀 Server running on port ${process.env.PORT || 3000}/`);
 });
