@@ -108,7 +108,7 @@ export const signin = async (req, res, next) => {
         .status(400)
         .json({ success: false, message: "Invalid password. Try Again." });
     }
-    generateJwtAsetCookie(userExist._id, res);
+    // generateJwtAsetCookie(userExist._id, res);
     res.status(200).json({
       success: true,
       message: "Sign in success.",
@@ -166,7 +166,7 @@ export const verifyEmail = async (req, res, next) => {
     verifyUser.verificationCode = undefined;
     verifyUser.verificationCodeExpTime = undefined;
     const user = await verifyUser.save();
-    generateJwtAsetCookie(user._id, res);
+    // generateJwtAsetCookie(user._id, res);
     sendWelcomeEmail(splitName(user.username), user.email);
     res.status(200).json({
       success: true,
