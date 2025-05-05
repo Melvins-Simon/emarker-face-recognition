@@ -1,12 +1,31 @@
-# React + Vite
+![Face Enrollment](/client/public/session.png)
+_Real-time face detection and attendance marking in action_
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## 🌟 Introduction
 
-Currently, two official plugins are available:
+EMARKER is a **full-stack facial recognition attendance system** built on the MERN stack (Node.js, Express, React, MongoDB). It automates classroom attendance by identifying students through webcam face detection, eliminating manual roll calls.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## ✨ Key Features
 
-## Expanding the ESLint configuration
+| Feature                    | Description                                  |
+| -------------------------- | -------------------------------------------- |
+| 👨🏫 **Role-Based Access** | Admin, Lecturers, and Student dashboards     |
+| 📸 **Face Enrollment**     | Register student faces with webcam captures  |
+| 🎥 **Real-Time Detection** | Live classroom attendance marking via webcam |
+| 📊 **Automated Reports**   | Generate PDF attendance reports by course    |
+| ☁ **Cloud Storage**        | Student faces stored securely in Cloudinary  |
 
-If you are developing a production application, we recommend using TypeScript and enable type-aware lint rules. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## 🛠 Tech Stack
+
+### Backend
+
+- **Node.js & Express** - API server
+- **MongoDB** - Database
+- **JWT** - Authentication
+- **Cloudinary** - Image storage
+
+### AI Components
+
+- **68-Point Face Landmark Detection**
+- **Face Descriptor Extraction**
+- **Euclidean Distance Matching**

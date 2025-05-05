@@ -4,10 +4,9 @@ import toast from "react-hot-toast";
 import { persist } from "zustand/middleware";
 
 axios.defaults.withCredentials = true;
-const API_URL =
-  import.meta.env.MODE === "development"
-    ? "http://localhost:5000/api/auth"
-    : "https://ms-emarker-euhcbzb9gbf7ejgs.centralus-01.azurewebsites.net/api/auth";
+const API_URL = import.meta.env.MODE
+  ? "http://localhost:5000/api/auth"
+  : "https://ms-emarker-euhcbzb9gbf7ejgs.centralus-01.azurewebsites.net/api/auth";
 export const useAuthstore = create(
   persist((set) => ({
     user: null,
@@ -22,19 +21,13 @@ export const useAuthstore = create(
       set({ isLoading: false, error: null });
       try {
         set({ isLoading: true });
-        const response = await axios.post(
-          `${API_URL}/signup`,
-          {
-            username,
-            email,
-            password,
-            confirmPassword,
-            role,
-          },
-          {
-            withCredentials: true,
-          }
-        );
+        const response = await axios.post(`${API_URL}/signup`, {
+          username,
+          email,
+          password,
+          confirmPassword,
+          role,
+        });
         set({
           isLoading: false,
           message: response.data.message,
@@ -60,9 +53,7 @@ export const useAuthstore = create(
           {
             verificationCode,
           },
-          {
-            withCredentials: true,
-          }
+          { withCredentials: true }
         );
         set({
           user: response.data.data,
@@ -119,9 +110,7 @@ export const useAuthstore = create(
             password,
             role,
           },
-          {
-            withCredentials: true,
-          }
+          { withCredentials: true }
         );
         set({
           user: response.data.data,
@@ -167,15 +156,9 @@ export const useAuthstore = create(
       set({ isLoading: tfalserue, error: null });
       try {
         set({ isLoading: true });
-        const response = await axios.post(
-          `${API_URL}/forgot-password`,
-          {
-            email,
-          },
-          {
-            withCredentials: true,
-          }
-        );
+        const response = await axios.post(`${API_URL}/forgot-password`, {
+          email,
+        });
         set({
           message: response.data.message,
           isLoading: false,
@@ -196,16 +179,10 @@ export const useAuthstore = create(
       set({ isLoading: false, error: null });
       try {
         set({ isLoading: true });
-        const response = await axios.post(
-          `${API_URL}/reset-password/${id}`,
-          {
-            newPassword,
-            confirmNewPassword,
-          },
-          {
-            withCredentials: true,
-          }
-        );
+        const response = await axios.post(`${API_URL}/reset-password/${id}`, {
+          newPassword,
+          confirmNewPassword,
+        });
         set({
           message: response.data.message,
           isLoading: false,
@@ -230,9 +207,6 @@ export const useAuthstore = create(
           `${API_URL}/student/upload-face-dataset`,
           {
             images,
-          },
-          {
-            withCredentials: true,
           }
         );
         set({

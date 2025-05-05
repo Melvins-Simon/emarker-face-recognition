@@ -7,14 +7,18 @@
 ### Setup .env file
 
 ```bash
-MONGO_URI=your_mongo_uri
-PORT=5000
-NODE_ENV=development
-SECRETE_KEY=your_secrete_key
-RESET_PASSWORD_LINK=your_frontend_reset_password_url
-NODEMAILER_PASSWD=your_app_password_for_nodemailer
-NODEMAILER_USER=your_user_email
-CLIENT_URL= http://localhost:5173
+
+ MONGO_URI=your_mongo_uri
+ PORT=5000
+ NODE_ENV=development
+ SECRETE_KEY=your_secret_key
+ RESET_PASSWORD_LINK=http://localhost:5173/auth/reset-password/
+ NODEMAILER_PASSWD=your_nodemailer_app_password
+ NODEMAILER_USER=nodemailer_user_email
+ CLIENT_URL= http://localhost:5173
+ CLOUDINARY_CLOUD_NAME=your_cloudinary_name
+ CLOUDINARY_API_KEY=api_key
+ CLOUDINARY_API_SECRET=api_secret_key
 ```
 
 ### Run this app locally
@@ -23,10 +27,8 @@ CLIENT_URL= http://localhost:5173
 npm run start
 ```
 
-### Start the app
+### Start the server
 
 ```shell
 npm run server
 ```
-
-### Authentication & Authorization DONE! 🚀

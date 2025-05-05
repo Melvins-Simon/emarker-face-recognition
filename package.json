@@ -5,8 +5,9 @@
   "main": "server.js",
   "type": "module",
   "scripts": {
-    "start": "node --env-file=.env server.js",
-    "server": "node --watch --trace-warnings --env-file=.env server.js"
+    "start": "NODE_ENV=production node --env-file=.env server/server.js",
+    "server": "NODE_ENV=development node --watch --trace-warnings --env-file=.env server/server.js",
+    "build":"npm install && npm install --prefix client && npm run build --prefix client"
   },
   "author": "melvinssimon",
   "license": "ISC",

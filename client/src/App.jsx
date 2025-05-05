@@ -21,6 +21,7 @@ import ProtectedRoute from "./components/Routeguard";
 import { useAuthstore } from "./store/Authstore";
 import FaceRecognition from "./components/Session";
 import GradientLoader, { PageLoader } from "./components/Loader";
+import EMarkerAPIServer from "./components/APIDOCS";
 
 const App = () => {
   const { isAuthenticated, user } = useAuthstore();
@@ -140,6 +141,7 @@ const App = () => {
 
       {/* Error Routes */}
       <Route element={<Notauthorized />} path="/not-authorized" />
+      <Route element={<EMarkerAPIServer />} path="/emarker-api-doc" />
       <Route element={<Notfound />} path="*" />
     </Routes>
   );

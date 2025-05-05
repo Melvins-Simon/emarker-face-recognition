@@ -8,11 +8,9 @@ export const generateJwtAsetCookie = (userId, res) => {
 
   res.cookie("authorization", token, {
     httpOnly: true,
-    secure: true,
-    sameSite: "None",
-    domain: ".azurewebsites.net",
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "strict",
     maxAge: 7 * 24 * 60 * 60 * 1000,
-    path: "/",
   });
 
   return token;
