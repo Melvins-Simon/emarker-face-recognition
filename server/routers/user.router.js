@@ -27,15 +27,16 @@ router.post("/auth/verify-email", verifyEmail);
 router.post("/auth/forgot-password", forgotPasswd);
 router.post("/auth/reset-password/:id", resetPasswd);
 //Restricted routes
-router.post("/auth/signout", checkAuth, signout);
-router.get("/auth/check-auth", checkAuth, getUser);
-router.delete("/auth/delete/user/:id", checkAuth, delUser);
+router.post("/auth/signout", signout);
+router.get("/auth/check-auth", getUser);
+router.delete("/auth/delete/user/:id", delUser);
 
 // DASHBOARD
-router.get("/dash/get-users", checkAuth, get_all_users);
-router.post("/dash/add-course", checkAuth, add_course);
-router.get("/lectures", checkAuth, get_courses);
-router.delete("/delete-course/:courseId", checkAuth, deleteCourseById);
-router.post("/mark-attendance", checkAuth, markAttendance);
+router.get("/dash/get-users", get_all_users);
+router.post("/dash/add-course", add_course);
+router.get("/lectures", get_courses);
+router.delete("/delete-course/:courseId", deleteCourseById);
+router.post("/mark-attendance", markAttendance);
 
 export default router;
+// removed jwt verfication for project purpose
