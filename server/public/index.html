@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EMarker API Server</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-blue: #4361ee;
+            --primary-purple: #7209b7;
+            --text-light: #f8f9fa;
+            --text-dark: #212529;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+            transition: all 0.3s ease;
+        }
+        
+        body {
+            background: linear-gradient(135deg, var(--primary-blue), var(--primary-purple));
+            color: var(--text-light);
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding: 1.5rem;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(to right, #fff, #c9d6ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .subtitle {
+            font-weight: 300;
+            opacity: 0.9;
+        }
+        
+        .card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 4px 16px 0 rgba(31, 38, 135, 0.2);
+        }
+        
+        .card h2 {
+            margin-bottom: 1rem;
+            color: var(--text-light);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .endpoint {
+            background: rgba(0, 0, 0, 0.2);
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            cursor: pointer;
+        }
+        
+        .endpoint:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateY(-3px);
+        }
+        
+        .method {
+            display: inline-block;
+            padding: 0.3rem 0.8rem;
+            border-radius: 6px;
+            font-weight: 600;
+            margin-right: 0.8rem;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+        }
+        
+        .post { background-color: #4cc9f0; color: var(--text-dark); }
+        .get { background-color: #4895ef; color: white; }
+        .delete { background-color: #f72585; color: white; }
+        
+        .path {
+            font-weight: 500;
+            color: var(--text-light);
+        }
+        
+        .desc {
+            margin-top: 0.5rem;
+            opacity: 0.85;
+            font-size: 0.95rem;
+        }
+        
+        .frontend-link {
+            display: inline-block;
+            padding: 0.8rem 1.5rem;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            cursor: pointer;
+            margin-bottom: 1em;
+        }
+        
+        .frontend-link:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>EMarker API Server</h1>
+            <p class="subtitle">Backend services powering the Face Recognition System</p>
+        </header>
+        
+        <div class="card">
+            <a href="https://emarker-face-recognition.vercel.app/" class="frontend-link">
+            → Go to EMarker Frontend
+        </a>
+            <h2>🔐 Authentication Routes</h2>
+            
+            <div class="endpoint">
+                <span class="method post">POST</span>
+                <span class="path">/api/auth/signup</span>
+                <div class="desc">User registration endpoint</div>
+            </div>
+            
+            <div class="endpoint">
+                <span class="method post">POST</span>
+                <span class="path">/api/auth/signin</span>
+                <div class="desc">User login endpoint</div>
+            </div>
+            
+            <div class="endpoint">
+                <span class="method post">POST</span>
+                <span class="path">/api/auth/verify-email</span>
+                <div class="desc">Email verification</div>
+            </div>
+            
+            <div class="endpoint">
+                <span class="method post">POST</span>
+                <span class="path">/api/auth/forgot-password</span>
+                <div class="desc">Password reset request</div>
+            </div>
+            
+            <div class="endpoint">
+                <span class="method post">POST</span>
+                <span class="path">/api/auth/reset-password/:id</span>
+                <div class="desc">Complete password reset</div>
+            </div>
+            
+            <div class="endpoint">
+                <span class="method post">POST</span>
+                <span class="path">/api/auth/signout</span>
+                <div class="desc">User logout (JWT protected)</div>
+            </div>
+            
+            <div class="endpoint">
+                <span class="method get">GET</span>
+                <span class="path">/api/auth/check-auth</span>
+                <div class="desc">Verify authentication status (JWT protected)</div>
+            </div>
+            
+            <div class="endpoint">
+                <span class="method delete">DELETE</span>
+                <span class="path">/api/auth/delete/user/:id</span>
+                <div class="desc">Delete user account (JWT protected)</div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <h2>📊 Dashboard Routes</h2>
+            
+            <div class="endpoint">
+                <span class="method get">GET</span>
+                <span class="path">/api/dash/get-users</span>
+                <div class="desc">Get all users (JWT protected)</div>
+            </div>
+            
+            <div class="endpoint">
+                <span class="method post">POST</span>
+                <span class="path">/api/dash/add-course</span>
+                <div class="desc">Add new course (JWT protected)</div>
+            </div>
+            
+            <div class="endpoint">
+                <span class="method get">GET</span>
+                <span class="path">/api/lectures</span>
+                <div class="desc">Get all courses (JWT protected)</div>
+            </div>
+            
+            <div class="endpoint">
+                <span class="method delete">DELETE</span>
+                <span class="path">/api/delete-course/:courseId</span>
+                <div class="desc">Delete course (JWT protected)</div>
+            </div>
+            
+            <div class="endpoint">
+                <span class="method post">POST</span>
+                <span class="path">/api/mark-attendance</span>
+                <div class="desc">Mark student attendance (JWT protected)</div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <h2>📸 Face Recognition Routes</h2>
+            
+            <div class="endpoint">
+                <span class="method post">POST</span>
+                <span class="path">/api/student/upload-face-dataset</span>
+                <div class="desc">Upload face dataset (JWT protected)</div>
+            </div>
+            
+            <div class="endpoint">
+                <span class="method get">GET</span>
+                <span class="path">/api/faces</span>
+                <div class="desc">Get all face images (JWT protected)</div>
+            </div>
+        </div>
+        
+      
+    </div>
+</body>
+</html>
