@@ -23,8 +23,6 @@ app.use(
       "https://emarker-face-recognition.vercel.app",
       "http://localhost:5173",
     ],
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization", "Accept"],
     credentials: true,
   })
 );
