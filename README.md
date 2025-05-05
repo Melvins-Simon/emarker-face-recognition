@@ -2,7 +2,7 @@
 
 **API ON AZURE CLOUD:** [Visit API](https://ms-emarker-euhcbzb9gbf7ejgs.centralus-01.azurewebsites.net/)
 
-**CLIENT ON VERCEL:** [Visit_SITE](https://emarker-face-recognition.vercel.app/) 
+**CLIENT ON VERCEL:** [Visit Site](https://emarker-face-recognition.vercel.app/) 
 
 
 ![Face Enrollment](/client/public/session.png)
