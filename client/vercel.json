@@ -1,0 +1,41 @@
+{
+  "headers": [
+    {
+      "source": "/_next/static/(.*)",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
+      ]
+    },
+    {
+      "source": "/(.*)", 
+      "headers": [
+        {
+          "key": "Access-Control-Allow-Origin",
+          "value": "https://ms-emarker-euhcbzb9gbf7ejgs.centralus-01.azurewebsites.net"
+        },
+        {
+          "key": "Access-Control-Allow-Credentials",
+          "value": "true"
+        },
+        {
+          "key": "Access-Control-Allow-Methods",
+          "value": "GET,POST,PUT,DELETE,OPTIONS,PATCH"
+        },
+        {
+          "key": "Access-Control-Allow-Headers",
+          "value": "X-CSRF-Token, Authorization, Content-Type, Accept, Origin"
+        }
+      ]
+    }
+  ],
+  "rewrites": [
+    {
+      "source": "/api/:path*",
+      "destination": "https://ms-emarker-euhcbzb9gbf7ejgs.centralus-01.azurewebsites.net/api/:path*"
+    },
+    {
+      "source": "/(auth|dash|faces|student|lectures|mark-attendance)/:path*",
+      "destination": "https://ms-emarker-euhcbzb9gbf7ejgs.centralus-01.azurewebsites.net/$1/:path*"
+    }
+  ]
+}
