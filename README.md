@@ -1,8 +1,8 @@
 # Face Recognition Attendance System (EMARKER)
 
-**API ON AZURE CLOUD:** [Visit API](https://ms-emarker-euhcbzb9gbf7ejgs.centralus-01.azurewebsites.net/)
+**API ON AZURE CLOUD:** [Visit API](https://emarker-webapp-c9bthufna7ghagh6.eastus-01.azurewebsites.net/emarker-api-doc)
 
-**CLIENT ON VERCEL:** [Visit Site](https://emarker-face-recognition.vercel.app/) 
+**CLIENT ON VERCEL:** [Visit Site](https://emarker-webapp-c9bthufna7ghagh6.eastus-01.azurewebsites.net/) 
 
 
 ![Face Enrollment](/client/public/session.png)
