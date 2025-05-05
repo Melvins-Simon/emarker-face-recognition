@@ -1,6 +1,7 @@
 # Face Recognition Attendance System (EMARKER)
 
-**SITE DEPLOYED ON AZURE CLOUD:** [Visit Emarker](https://jolly-hill-07e8ad610.6.azurestaticapps.net/) 
+**CLIENT ON VERCEL:** [Visit_Emarker](https://emarker-face-recognition.vercel.app/) 
+**API ON AZURE CLOUD:** [Test_Base_Endpoint](https://ms-emarker-euhcbzb9gbf7ejgs.centralus-01.azurewebsites.net/) 
 
 
 ![Face Enrollment](/client/public/session.png)
