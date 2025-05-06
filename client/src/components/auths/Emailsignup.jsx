@@ -48,7 +48,7 @@ const Emailsignup = () => {
 
   return (
     <div className={`w-[410px] h-max flex flex-col gap-3 `}>
-      <div className="text-center font-tektur font-extrabold text-2xl">
+      <div className="text-center font-tektur font-extrabold max-md:text-xl text-2xl">
         Set your account credentials
       </div>
       <div className="text-center font-semibold text-lg">
@@ -60,7 +60,7 @@ const Emailsignup = () => {
           SSO
         </Link>
       </div>
-      <form className="flex flex-col gap-2">
+      <form className="flex flex-col gap-2 max-md:text-sm">
         <Input
           name={"username"}
           type={`text`}

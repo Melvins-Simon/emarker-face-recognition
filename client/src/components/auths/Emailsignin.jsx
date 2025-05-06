@@ -37,7 +37,7 @@ const Emailsignin = () => {
 
   return (
     <div className={`w-[410px] h-max flex flex-col gap-5 -mt-[10%]`}>
-      <div className="text-center font-tektur font-extrabold text-2xl">
+      <div className="text-center font-tektur font-extrabold max-md:text-xl text-2xl">
         Log into emarker
       </div>
       <div className="text-center font-semibold text-lg">
@@ -50,7 +50,11 @@ const Emailsignin = () => {
           Google
         </Link>
       </div>
-      <form onSubmit={Handlesubmit} className="flex flex-col gap-4" action="">
+      <form
+        onSubmit={Handlesubmit}
+        className="flex flex-col gap-4 max-md:text-sm"
+        action=""
+      >
         <Input
           name={"email"}
           type={`email`}

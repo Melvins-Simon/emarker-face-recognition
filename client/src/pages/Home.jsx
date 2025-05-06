@@ -22,12 +22,12 @@ const Home = () => {
         </div>
         <div className="bg-indigo-600 blur-[40rem] absolute inset-0 rounded-t-2xl -z-10" />
         <div className="ring-[.5px] ring-indigo-600 p-3 hover:ring-green-600 trans  absolute inset-x-0 top-[15%] max-sm:top-[10%] w-[80%] max-sm:w-[90%] h-[50%] max-sm:h-[55%] m-auto flex flex-col justify-evenly gap-3 z-20">
-          <div className="text-center text-5xl max-sm:text-2xl font-extrabold flex justify-center items-center">
+          <div className="text-center text-5xl max-sm:text-xl font-extrabold flex justify-center items-center">
             <p className="font-tektur bg-gradient-to-b from-white to-gray-400 w-max text-transparent bg-clip-text">
               Unleash the Power of Automated Attendance System
             </p>
           </div>
-          <div className="text-center -mt-5">
+          <div className="text-center max-md:text-sm -mt-3">
             <span>
               Say goodbye to manual roll calls and outdated attendance sheets!
               Our AI-powered Attendance System revolutionizes the way

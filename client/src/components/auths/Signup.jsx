@@ -9,15 +9,17 @@ const Signup = () => {
     localStorage.setItem("role", role);
   };
   return (
-    <div className={` w-[410px] h-max flex flex-col gap-5 -mt-[10%]`}>
+    <div
+      className={` w-[410px] h-max flex flex-col gap-5 -mt-[10%] max-md:-mt-[30%]`}
+    >
       <div className="text-center font-tektur font-extrabold text-2xl">
         Create your emarker account
       </div>
-      <div className="text-lg font-semibold text-center">
+      <div className="text-lg font-semibold text-center max-md:text-sm">
         By signing up, you agree to our{" "}
         <Link className="text-blue-400 hover:underline">terms of service</Link>
       </div>
-      <div className="flex flex-col gap-5 w-[80%] mx-auto mt-[5%]">
+      <div className="flex flex-col gap-5 w-[80%] mx-auto mt-[5%] max-md:text-sm">
         <div className="font-semibold">Continue as,</div>
         <div className="grid grid-cols-3 gap-2">
           <Link
