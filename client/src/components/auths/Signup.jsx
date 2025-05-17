@@ -16,8 +16,8 @@ const Signup = () => {
         Create your emarker account
       </div>
       <div className="text-lg font-semibold text-center max-md:text-sm">
-        By signing up, you agree to our{" "}
-        <Link className="text-blue-400 hover:underline">terms of service</Link>
+        First create an admin account to access other dashboards, All mails are
+        sent to spam box.
       </div>
       <div className="flex flex-col gap-5 w-[80%] mx-auto mt-[5%] max-md:text-sm">
         <div className="font-semibold">Continue as,</div>
